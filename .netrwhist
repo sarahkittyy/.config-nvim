@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/home/sarahkitty/code/c++/voxels'
+let g:netrw_dirhist_3='/home/sarahkitty/code/c++/voxels/src'
+let g:netrw_dirhist_2='/home/sarahkitty/code/c++/voxels'
+let g:netrw_dirhist_1='/home/sarahkitty/glm'
+let g:netrw_dirhist_0='/home/sarahkitty/code/web/squaredlabs/workspace/innovation-portal'
+let g:netrw_dirhist_9='/home/sarahkitty/.config/neofetch'
+let g:netrw_dirhist_8='/home/sarahkitty/code/web/squaredlabs/workspace'
+let g:netrw_dirhist_7='/home/sarahkitty/code/web/squaredlabs/workspace/donation-analytics'
+let g:netrw_dirhist_6='/home/sarahkitty/code/web/squaredlabs/workspace'
+let g:netrw_dirhist_5='/home/sarahkitty/code/web/squaredlabs/workspace/donation-analytics'
