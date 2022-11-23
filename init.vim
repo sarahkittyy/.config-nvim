@@ -825,4 +825,5 @@ hi SignatureMarkText guibg=#000
 
 if exists('g:nvui')
 	set guifont=FiraCode\ Nerd\ Font\ Mono:w53:h10
+	:NvuiAnimationsEnabled v:false
 endif

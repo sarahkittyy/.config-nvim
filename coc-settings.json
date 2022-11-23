@@ -52,6 +52,8 @@
   },
   "coc.preferences.semanticTokensHighlights": false,
   "clangd.compilationDatabasePath": "build/",
+  "clangd.inlayHints.enable": false,
+  "inlayHint.enable": false,
   "java.errors.incompleteClasspath.severity": "ignore",
   "typescript.format.enabled": false,
   "typescript.showUnused": false,
