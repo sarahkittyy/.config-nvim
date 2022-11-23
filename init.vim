@@ -822,3 +822,7 @@ let g:coc_node_args=['--max-old-space-size=3000']
 let g:open_in_insert_mode = 0
 
 hi SignatureMarkText guibg=#000
+
+if exists('g:nvui')
+	set guifont=FiraCode\ Nerd\ Font\ Mono:w53:h10
+endif
