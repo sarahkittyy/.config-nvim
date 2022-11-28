@@ -1,3 +1,4 @@
+" THEME CONFIG / PLUGIN PRELOAD CONFIG ------------------------------------------------------------------
 let g:polyglot_disabled = ['autoindent', 'cpp.plugin', 'typescript.plugin', 'javascript.plugin', 'vue.plugin']
 
 let g:ale_hover_cursor = 0
@@ -11,80 +12,94 @@ let g:gruvbox_material_diagnostic_text_highlight = 0
 let g:gruvbox_material_diagnostic_line_highlight = 0
 let g:gruvbox_material_statusline_style = 'mix'
 let g:gruvbox_material_visual = 'grey background'
+
 let g:gruvbox_italic=1
+let g:gruvbox_contrast_dark="hard"
+let g:gruvbox_improved_strings=0
+let g:gruvbox_transparent_bg=0
+
+let g:gruvbox_baby_background_color = 'dark'
+
 let g:palenight_terminal_italics=1
+
 let g:tokyonight_enable_italic=1
+let g:tokyonight_style = 'night' " available: night, storm
+
+let g:tokyodark_color_gamma = "1.2"
+
+let g:onedark_config = {
+			\ 'style': 'darker'
+			\}
 
 let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkTextHL = 'LineNr'
 
 call plug#begin('~/.config/nvim/plugins')
+	" themes
+	Plug 'tiagovla/tokyodark.nvim'
+	Plug 'EdenEast/nightfox.nvim'
+	Plug 'navarasu/onedark.nvim'
+	Plug 'drewtempelmeyer/palenight.vim', { 'frozen': 1 }
+	Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+	Plug 'sainnhe/gruvbox-material', { 'frozen': 1 }
+	Plug 'morhetz/gruvbox'
+	Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+	Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
+	Plug 'kyazdani42/nvim-web-devicons', { 'frozen': 1 }
+	Plug 'ryanoasis/vim-devicons'
 
-"Plug 'dense-analysis/ale'
-"Plug 'sheerun/vim-polyglot'
-"Plug 'leafgarland/typescript-vim'
-"Plug 'pangloss/vim-javascript'
-"Plug 'famiu/feline.nvim'
+	Plug 'neoclide/coc.nvim', { 'branch' : 'master', 'do': 'yarn install --frozen-lockfile' }
+	Plug 'github/copilot.vim', { 'branch': 'release' }
+	"Plug 'dense-analysis/ale'
 
-"Plug 'kdheepak/tabline.nvim'
-Plug 'tiagovla/tokyodark.nvim'
-Plug 'EdenEast/nightfox.nvim'
-Plug 'liuchengxu/vista.vim'
-Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'navarasu/onedark.nvim'
-Plug 'nvim-telescope/telescope-frecency.nvim'
-Plug 'kkharji/sqlite.lua'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'voldikss/vim-floaterm'
-"Plug 'rcarriga/nvim-notify'
-"Plug 'stevearc/dressing.nvim'
-Plug 'drewtempelmeyer/palenight.vim', { 'frozen': 1 }
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
-Plug 'mattn/emmet-vim'
-Plug 'sainnhe/gruvbox-material', { 'frozen': 1 }
-Plug 'nvim-lua/plenary.nvim'
-Plug 'p00f/nvim-ts-rainbow'
-Plug 'lewis6991/gitsigns.nvim'
-Plug 'peitalin/vim-jsx-typescript'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'caenrique/nvim-toggle-terminal'
-Plug 'equalsraf/neovim-gui-shim'
-Plug 'morhetz/gruvbox'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'neoclide/coc.nvim', { 'branch' : 'master', 'do': 'yarn install --frozen-lockfile' }
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'xolox/vim-misc'
-Plug 'kyazdani42/nvim-tree.lua'
-"Plug 'preservim/nerdtree'
-"Plug 'Xuyuanp/nerdtree-git-plugin', { 'frozen': 1 }
-"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'kyazdani42/nvim-web-devicons', { 'frozen': 1 }
-Plug 'ryanoasis/vim-devicons'
-Plug 'kshenoy/vim-signature'
-Plug 'preservim/nerdcommenter'
-Plug 'ericcurtin/CurtineIncSw.vim'
-Plug 'skywind3000/asynctasks.vim'
-Plug 'skywind3000/asyncrun.vim'
-Plug 'sarahkittyy/vim-vue', { 'frozen': 1 }
-Plug 'mg979/vim-visual-multi'
-Plug 'tpope/vim-fugitive'
-Plug 'rhysd/vim-clang-format'
-Plug 'tikhomirov/vim-glsl'
-Plug 'lervag/vimtex'
-Plug 'AndrewRadev/tagalong.vim'
-"Plug 'baopham/vim-nerdtree-unfocus'
-Plug 'wesQ3/vim-windowswap'
-Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-Plug 'sarahkittyy/vim-session'
-Plug 'github/copilot.vim', { 'branch': 'release' }
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	Plug 'tikhomirov/vim-glsl'
+	"Plug 'sheerun/vim-polyglot'
+	Plug 'p00f/nvim-ts-rainbow'
+	Plug 'lervag/vimtex'
+
+	Plug 'nvim-lualine/lualine.nvim'
+
+	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+	Plug 'liuchengxu/vista.vim'
+
+	Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
+	Plug 'nathanaelkane/vim-indent-guides'
+	Plug 'mattn/emmet-vim'
+	Plug 'lewis6991/gitsigns.nvim'
+	Plug 'caenrique/nvim-toggle-terminal'
+	Plug 'equalsraf/neovim-gui-shim'
+	Plug 'nvim-telescope/telescope.nvim'
+	Plug 'kyazdani42/nvim-tree.lua'
+	Plug 'kshenoy/vim-signature'
+	Plug 'preservim/nerdcommenter'
+	Plug 'ericcurtin/CurtineIncSw.vim'
+	Plug 'skywind3000/asynctasks.vim'
+	Plug 'skywind3000/asyncrun.vim'
+	Plug 'sarahkittyy/vim-vue', { 'frozen': 1 }
+	Plug 'mg979/vim-visual-multi'
+	Plug 'tpope/vim-fugitive'
+	Plug 'rhysd/vim-clang-format'
+	Plug 'AndrewRadev/tagalong.vim'
+	Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+	Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+	Plug 'sarahkittyy/vim-session'
+
+	Plug 'wesQ3/vim-windowswap'
+	Plug 'voldikss/vim-floaterm'
+	Plug 'xolox/vim-misc'
+
+	Plug 'nvim-lua/plenary.nvim'
+	Plug 'kkharji/sqlite.lua'
+
+	"Plug 'preservim/nerdtree'
+	"Plug 'Xuyuanp/nerdtree-git-plugin', { 'frozen': 1 }
+	"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+	"Plug 'baopham/vim-nerdtree-unfocus'
 
 call plug#end()
 
-" standard config
+" VIM CONFIG ----------------------------------
 set tabstop=4
 set title
 set nofixeol
@@ -133,32 +148,21 @@ set ssop+=winsize
 set ssop+=winpos
 set ssop+=resize
 
-let g:gruvbox_contrast_dark="hard"
-let g:gruvbox_improved_strings=0
-let g:gruvbox_transparent_bg=0
-set termguicolors
-set background=dark
-"colorscheme gruvbox-material
-let g:tokyonight_style = 'night' " available: night, storm
-let g:tokyodark_color_gamma = "1.2"
-"colorscheme tokyonight
-"colorscheme palenight
-let g:onedark_config = {
-			\ 'style': 'darker'
-			\}
-let g:gruvbox_baby_background_color = 'dark'
-colorscheme tokyodark
+set tal=%!MyTabLine()
 
 set pyxversion=3
 
-function! SetRnu()
-	if &ft =~'NvimTree'
-		return
-	endif
-	set rnu
-	set nu
-endfunction
+set termguicolors
+set background=dark
 
+colorscheme tokyodark
+
+" patch to fix #pragma once annoyance
+hi! link TSError NONE
+hi! TabLineSel guifg=#78A2CC
+hi SignatureMarkText guibg=#000
+
+" AUTOCOMMANDS ---------------------------------------
 augroup nums
 	au!
 	au BufEnter,InsertLeave * call SetRnu()
@@ -184,12 +188,6 @@ augroup all
 	au BufNewFile,BufRead /*.rasi setf css
 	au BufNewFile,BufRead *.ipynb setfiletype python
 	"autocmd BufWritePost $MYVIMRC call ReloadVimrc()
-	autocmd Filetype NvimTree nmap <silent><buffer><leader>e e:exec ":cd " . getcwd()<cr>
-	autocmd Filetype NvimTree nmap <silent><buffer>u <leader>u:exec ":cd " . getcwd()<cr>
-	autocmd Filetype c,cpp vnoremap <buffer><leader>C :ClangFormat<CR>
-	autocmd Filetype c,cpp nnoremap <buffer><leader>C :<C-u>ClangFormat<CR>
-	autocmd Filetype html,vue,jsx imap <leader>f </<C-x><C-o><TAB><Esc>F<i
-	autocmd Filetype html,vue,jsx nmap <leader>f a</<C-x><C-o><TAB><Esc>F<i
 	au BufEnter * :ClangFormatAutoDisable
 	au BufEnter *.cpp,*.hpp,*.c,*.h :ClangFormatAutoEnable
 	autocmd Filetype tex setlocal indentexpr=
@@ -206,7 +204,17 @@ augroup all
 	autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 augroup END
 
-" mappings
+" MAPPINGS -------------------------------------------
+augroup maps
+	au!
+	autocmd Filetype NvimTree nmap <silent><buffer><leader>e e:exec ":cd " . getcwd()<cr>
+	autocmd Filetype NvimTree nmap <silent><buffer>u <leader>u:exec ":cd " . getcwd()<cr>
+	autocmd Filetype c,cpp vnoremap <buffer><leader>C :ClangFormat<CR>
+	autocmd Filetype c,cpp nnoremap <buffer><leader>C :<C-u>ClangFormat<CR>
+	autocmd Filetype html,vue,jsx imap <leader>f </<C-x><C-o><TAB><Esc>F<i
+	autocmd Filetype html,vue,jsx nmap <leader>f a</<C-x><C-o><TAB><Esc>F<i
+augroup END
+
 "nmap <C-n> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 nnoremap <C-n> :NvimTreeToggle<CR>
 nmap gl :NvimTreeFocus<CR>
@@ -227,7 +235,6 @@ inoremap {<space> {
 tnoremap <s-space> <space>
 tnoremap <s-BS> <BS>
 tnoremap <C-BS> <C-w>
-let g:copilot_no_tab_map = v:true
 imap <silent><script><expr> <C-J> copilot#Accept("")
 
 nmap <silent> gd <Plug>(coc-definition)
@@ -273,109 +280,36 @@ nnoremap <silent> <leader>ji :MagmaInit<CR>
 xnoremap <silent>       <leader>jv  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <leader>jc :MagmaReevaluateCell<CR>
 nnoremap <silent>       <leader>jd :MagmaDelete<CR>
+" coc
+inoremap <silent><expr> <Down>
+	\ coc#pum#visible() ? coc#pum#next(1) :
+  \ pumvisible() ? "\<C-n>" :
+	\ "\<Down>"
+inoremap <silent><expr> <Up>
+	\ coc#pum#visible() ? coc#pum#prev(1) :
+  \ pumvisible() ? "\<C-p>" :
+	\ "\<Up>"
+"inoremap <silent><expr> <TAB>
+      "\ coc#pum#visible() ? coc#pum#next(1) :
+      "\ CheckBackspace() ? "\<Tab>" :
+      "\ coc#refresh()
+"inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent> f<TAB> <TAB>
 
-" commands
+" COMMANDS -----------------------------------
 command! Config :e ~/.config/nvim/init.vim
 command! GuiConfig :e ~/.config/nvim/ginit.vim
 command! RunnerConfig :e ~/.config/nvim/runners.vim
 command! Reload :call ReloadVimrc()
 command! -nargs=1 -complete=file Wcd :exe "normal :cd <args><CR>,l"
 
-" functions
-function! CloseHiddenBuffers()
-    " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    " close any buffers hidden
-    " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    let open_buffers = []
-
-    for i in range(tabpagenr('$'))
-        call extend(open_buffers, tabpagebuflist(i + 1))
-    endfor
-
-    for num in range(1, bufnr("$") + 1)
-        if buflisted(num) && index(open_buffers, num) == -1
-            exec "bdelete! ".num
-        endif
-    endfor
-endfunction
-
-function! RefreshAll()
-	:execute ":wa | %bd | bn"
-	echo "Refreshed to default"
-endfunction
-
-function! s:show_documentation()
-	if (coc#rpc#ready())
-		call CocActionAsync('doHover')
-	endif
-endfunction
-
-function MyTabLine()
-  let s = ''
-  for i in range(tabpagenr('$'))
-	" select the highlighting
-	if i + 1 == tabpagenr()
-	  let s .= '%#StatusLine#'
-	else
-	  let s .= '%#StatusLineNC#'
-	endif
-
-	" set the tab page number (for mouse clicks)
-	let s .= '%' . (i + 1) . 'T'
-	let s .= ' ' . (i + 1)
-
-	" the label is made by MyTabLabel()
-	let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
-	let s .= GetFileTypeIcon(i + 1) . ' '
-  endfor
-
-
-  " after the last tab fill with TabLineFill and reset tab page nr
-  let s .= '%#TabLineFill#%T'
-
-  return s
-endfunction
-
-function MyTabLabel(n)
-  let buflist = tabpagebuflist(a:n)
-  let winnr = tabpagewinnr(a:n)
-  return fnamemodify(bufname(buflist[winnr - 1]), ':t')
-endfunction
-
-set tal=%!MyTabLine()
-
-if !exists('*ReloadVimrc')
-fun! ReloadVimrc()
-   let save_cursor = getpos('.')
-   source $MYVIMRC
-   call setpos('.', save_cursor)
-endfun
-endif
-
-function! SaveSession()
-	let l:ctab = tabpagenr()
-	tabdo cclose
-	tabdo TagbarClose
-	tabdo NvimTreeClose
-	:exe ":normal " . l:ctab . "gt"
-	let hash = system("echo " . shellescape(getcwd()) . "| md5 | cut -d' ' -f 1")
-	let path = "~/.vim/sessions/" . hash
-	:execute ":SaveSession! " . path
-	echom "Saved to " . path
-endfunction
-
-function! LoadSession()
-	let hash = system("echo " . shellescape(getcwd()) . "| md5 | cut -d' ' -f 1")
-	let path = "~/.vim/sessions/" . hash
-	call RefreshAll()
-	:execute ":OpenSession! " . path
-	echom "Loaded from " . path
-endfunction
-
 " language runners
 source ~/.config/nvim/runners.vim
 
-" plugin config
+" PLUGIN CONFIG -------------------------------------------
 let g:asyncrun_open = 6
 let g:asynctasks_term_pos = 'bottom'
 
@@ -393,15 +327,146 @@ let g:indent_guides_color_change_percent = 2
 let g:user_emmet_leader_key='<C-Q>'
 let g:user_emmet_mode='a'
 
-function! NearestMethodOrFunction() abort
-  return get(b:, 'vista_nearest_method_or_function', '')
-endfunction
+let g:asyncrun_runner = get(g:, 'asyncrun_runner', {})
+
+let g:mkdp_browserfunc='g:Open_browser'
+let g:mkdp_auto_close = 0
+
+let g:windowswap_map_keys = 0
+
+let g:vimtex_view_method = 'zathura'
+
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeHighlightCursorline = 0
+
+let g:NERDTreeDirArrowExpandable = '►'
+let g:NERDTreeDirArrowCollapsible = '▼'
+let g:WebDevIconsDisableDefaultFolderSymbolColorFromNERDTreeDir = 1
+let g:WebDevIconsDisableDefaultFileSymbolColorFromNERDTreeFile = 1
+let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
+
+let g:workspace_autosave_ignore = ['nerdtree']
+
+let g:session_directory = $HOME . '/.vim/sessions/'
+let g:session_autosave = 0
+
+let g:workspace_session_disable_on_args = 1
+
+let g:clang_format#detect_style_file = 1
+let g:clang_format#command="/usr/bin/clang-format"
+let g:clang_format#enable_fallback_style = 0
+let g:clang_format#auto_format = 0
+
+let g:copilot_no_tab_map = v:true
+
+let g:neoterm_size=15
+
+let g:ctrlp_max_files=0
+let g:ctrlp_max_depth=40
+
+let g:tagalong_additional_filetypes = ['vue']
+
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.vue'
+let g:closetag_filetypes = 'html,xhtml,phtml,vue'
+
+let g:space_vim_dark_background = 235
+
+let g:loaded_matchparen=0
+
+let g:tex_flavor='latex'
+
+let g:doge_mapping='<leader>D'
+
+let g:vue_pre_processors = 'detect_on_enter'
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+
+let g:NERDTreeDirArrows = 1
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+								\ }
+
+" let g:multi_cursor_start_word_key = 'gb'
+" let g:multi_cursor_next_key = 'gb'
+let g:VM_maps = {}
+let g:VM_maps['Find Under'] = 'gb'
+let g:VM_maps['Find Subword Under'] = 'gb'
+
+"let g:vue_disable_pre_processors = 1 
+let g:vimtex_matchparen_enabled = 0
+
+let g:coc_snippet_next = '<tab>'
+let g:coc_node_path = '/home/sarahkitty/.nvm/versions/node/v18.9.0/bin/node'
+let g:coc_node_args=['--max-old-space-size=3000']
+
+let g:open_in_insert_mode = 0
 
 lua <<EOF
 -- require('feline').setup({
 --	  preset = 'default'
 -- })
 
+-- LUA FUNCTIONS -------------------------------------------
+local function collapseNode (node)
+  local entries = node.entries
+  if not entries then return end
+  for _, e in pairs(entries) do collapseNode(e) end
+  node.open = false
+end
+
+function _G.nvimTreeCollapse()
+  local lib = require'nvim-tree.lib'
+  collapseNode(lib.Tree)
+  lib.refresh_tree()
+end
+function _G.ExpandAll()
+    local nvimlib = require('nvim-tree.lib')
+    local function iter(nodes)
+        for _, node in pairs(nodes) do
+            if not node.open and node.nodes then
+                nvimlib.expand_or_collapse(node)
+            end
+            if node.nodes then
+                iter(node.nodes)
+            end
+        end
+    end
+
+    local nodes = {}
+    local currnode = nvimlib.get_node_at_cursor()
+    if currnode == nil then
+        return
+    end
+    nodes = {currnode}
+    iter(nodes)
+end
+
+-- LUA CONFIG ------------------------------------------
 require('gitsigns').setup {
   signs = {
     add          = {hl = 'GitSignsAdd'   , text = '+', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
@@ -462,39 +527,6 @@ require('lualine').setup {
  	},
  	extensions = { 'nvim-tree' }
 }
-local function collapseNode (node)
-  local entries = node.entries
-  if not entries then return end
-  for _, e in pairs(entries) do collapseNode(e) end
-  node.open = false
-end
-
-function _G.nvimTreeCollapse()
-  local lib = require'nvim-tree.lib'
-  collapseNode(lib.Tree)
-  lib.refresh_tree()
-end
-function _G.ExpandAll()
-    local nvimlib = require('nvim-tree.lib')
-    local function iter(nodes)
-        for _, node in pairs(nodes) do
-            if not node.open and node.nodes then
-                nvimlib.expand_or_collapse(node)
-            end
-            if node.nodes then
-                iter(node.nodes)
-            end
-        end
-    end
-
-    local nodes = {}
-    local currnode = nvimlib.get_node_at_cursor()
-    if currnode == nil then
-        return
-    end
-    nodes = {currnode}
-    iter(nodes)
-end
 require('nvim-tree').setup {
 	filters = {
 		dotfiles = true
@@ -643,27 +675,16 @@ require'nvim-web-devicons'.setup {
 }
 EOF
 
-" let g:vue_pre_processors = ['scss', 'sass']
-let g:vue_pre_processors = 'detect_on_enter'
+" FUNCTIONS -------------------------------------------------------
+function! SetRnu()
+	if &ft =~'NvimTree'
+		return
+	endif
+	set rnu
+	set nu
+endfunction
 
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
-let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
-
-function! s:run_termite(opts)
+function! g:Run_termite(opts)
     let cmds = []
     let cmds += ['cd ' . shellescape(getcwd()) ]
     let cmds += [a:opts.cmd]
@@ -672,74 +693,17 @@ function! s:run_termite(opts)
     let command = 'termite -e "bash -c ' . text . '"'
     call system(command . ' &')
 endfunction
-
-let g:asyncrun_runner = get(g:, 'asyncrun_runner', {})
-let g:asyncrun_runner.termite = function('s:run_termite')
+let g:asyncrun_runner.termite = function('g:Run_termite')
 
 function! g:Open_browser(url)
 	":AsyncRun google-chrome-stable --new-window. a:url
 	:call asyncrun#run("", {}, "google-chrome-stable --new-window " . a:url)
 endfunction
-let g:mkdp_browserfunc='g:Open_browser'
-let g:mkdp_auto_close = 0
 
-let g:windowswap_map_keys = 0
-
-let g:vimtex_view_method = 'zathura'
-
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-let g:NERDTreeHighlightCursorline = 0
-
-let g:NERDTreeDirArrowExpandable = '►'
-let g:NERDTreeDirArrowCollapsible = '▼'
-let g:WebDevIconsDisableDefaultFolderSymbolColorFromNERDTreeDir = 1
-let g:WebDevIconsDisableDefaultFileSymbolColorFromNERDTreeFile = 1
-let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
-
-let g:workspace_autosave_ignore = ['nerdtree']
-
-let g:session_directory = $HOME . '/.vim/sessions/'
-let g:session_autosave = 0
-
-let g:workspace_session_disable_on_args = 1
-
-let g:clang_format#detect_style_file = 1
-let g:clang_format#command="/usr/bin/clang-format"
-let g:clang_format#enable_fallback_style = 0
-let g:clang_format#auto_format = 0
-
-let g:neoterm_size=15
-
-let g:ctrlp_max_files=0
-let g:ctrlp_max_depth=40
-
-let g:tagalong_additional_filetypes = ['vue']
-
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.vue'
-let g:closetag_filetypes = 'html,xhtml,phtml,vue'
-
-let g:space_vim_dark_background = 235
-
-let g:loaded_matchparen=0
-
-let g:tex_flavor='latex'
-
-let g:doge_mapping='<leader>D'
-
-let NERDTreeDirArrows = 1
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-                \ 'Modified'  :'✹',
-                \ 'Staged'    :'✚',
-                \ 'Untracked' :'✭',
-                \ 'Renamed'   :'➜',
-                \ 'Unmerged'  :'═',
-                \ 'Deleted'   :'✖',
-                \ 'Dirty'     :'✗',
-                \ 'Ignored'   :'☒',
-                \ 'Clean'     :'✔︎',
-                \ 'Unknown'   :'?',
-								\ }
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 function! LightlineFilename()
   let root = fnamemodify(get(b:, 'git_dir'), ':h')
@@ -772,57 +736,99 @@ function! GetFileTypeIconWithText()
 	return strlen(&ft) ? WebDevIconsGetFileTypeSymbol() . ' ' . &ft : 'no ft'
 endfunction
 
-" let g:multi_cursor_start_word_key = 'gb'
-" let g:multi_cursor_next_key = 'gb'
-let g:VM_maps = {}
-let g:VM_maps['Find Under'] = 'gb'
-let g:VM_maps['Find Subword Under'] = 'gb'
+function! CloseHiddenBuffers()
+    " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    " close any buffers hidden
+    " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    let open_buffers = []
 
-"let g:vue_disable_pre_processors = 1 
-let g:vimtex_matchparen_enabled = 0
+    for i in range(tabpagenr('$'))
+        call extend(open_buffers, tabpagebuflist(i + 1))
+    endfor
 
-inoremap <silent><expr> <Down>
-	\ coc#pum#visible() ? coc#pum#next(1) :
-  \ pumvisible() ? "\<C-n>" :
-	\ "\<Down>"
-inoremap <silent><expr> <Up>
-	\ coc#pum#visible() ? coc#pum#prev(1) :
-  \ pumvisible() ? "\<C-p>" :
-	\ "\<Up>"
-"inoremap <silent><expr> <TAB>
-      "\ coc#pum#visible() ? coc#pum#next(1) :
-      "\ CheckBackspace() ? "\<Tab>" :
-      "\ coc#refresh()
-"inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-inoremap <silent> f<TAB> <TAB>
-inoremap <expr> <leader>ft coc#pum#confirm()
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1] =~# '\s'
+    for num in range(1, bufnr("$") + 1)
+        if buflisted(num) && index(open_buffers, num) == -1
+            exec "bdelete! ".num
+        endif
+    endfor
 endfunction
 
-" patch to fix #pragma once annoyance
-hi! link TSError NONE
-hi! TabLineSel guifg=#78A2CC
+function! RefreshAll()
+	:execute ":wa | %bd | bn"
+	echo "Refreshed to default"
+endfunction
 
-let g:coc_snippet_next = '<tab>'
-let g:coc_node_path = '/home/sarahkitty/.nvm/versions/node/v18.9.0/bin/node'
-let g:coc_node_args=['--max-old-space-size=3000']
+function! s:show_documentation()
+	if (coc#rpc#ready())
+		call CocActionAsync('doHover')
+	endif
+endfunction
 
-let g:open_in_insert_mode = 0
+function! MyTabLine()
+  let s = ''
+  for i in range(tabpagenr('$'))
+	" select the highlighting
+	if i + 1 == tabpagenr()
+	  let s .= '%#StatusLine#'
+	else
+	  let s .= '%#StatusLineNC#'
+	endif
 
-hi SignatureMarkText guibg=#000
+	" set the tab page number (for mouse clicks)
+	let s .= '%' . (i + 1) . 'T'
+	let s .= ' ' . (i + 1)
 
+	" the label is made by MyTabLabel()
+	let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+	let s .= GetFileTypeIcon(i + 1) . ' '
+  endfor
+
+
+  " after the last tab fill with TabLineFill and reset tab page nr
+  let s .= '%#TabLineFill#%T'
+
+  return s
+endfunction
+
+function! MyTabLabel(n)
+  let buflist = tabpagebuflist(a:n)
+  let winnr = tabpagewinnr(a:n)
+  return fnamemodify(bufname(buflist[winnr - 1]), ':t')
+endfunction
+
+if !exists('*ReloadVimrc')
+	fun! ReloadVimrc()
+	   let save_cursor = getpos('.')
+	   source $MYVIMRC
+	   call setpos('.', save_cursor)
+	endfun
+endif
+
+function! SaveSession()
+	let l:ctab = tabpagenr()
+	tabdo cclose
+	tabdo TagbarClose
+	tabdo NvimTreeClose
+	:exe ":normal " . l:ctab . "gt"
+	let hash = system("echo " . shellescape(getcwd()) . "| md5 | cut -d' ' -f 1")
+	let path = "~/.vim/sessions/" . hash
+	:execute ":SaveSession! " . path
+	echom "Saved to " . path
+endfunction
+
+function! LoadSession()
+	let hash = system("echo " . shellescape(getcwd()) . "| md5 | cut -d' ' -f 1")
+	let path = "~/.vim/sessions/" . hash
+	call RefreshAll()
+	:execute ":OpenSession! " . path
+	echom "Loaded from " . path
+endfunction
+
+function! NearestMethodOrFunction() abort
+  return get(b:, 'vista_nearest_method_or_function', '')
+endfunction
+
+" NVUI CONFIG ----------------------------------------
 if exists('g:nvui')
 	set guifont=FiraCode\ Nerd\ Font\ Mono:w53:h10
 	:NvuiAnimationsEnabled v:false
