@@ -645,7 +645,7 @@ require('telescope').setup {
 	}
   }
 }
-require('telescope').load_extension('frecency')
+-- require('telescope').load_extension('frecency')
 
 require'nvim-treesitter.configs'.setup {
 	ignore_install = { "latex" },
