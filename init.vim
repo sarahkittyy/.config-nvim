@@ -25,6 +25,8 @@ let g:palenight_terminal_italics=1
 let g:tokyonight_enable_italic=1
 let g:tokyonight_style = 'night' " available: night, storm
 
+let g:nord_italic_comments = 1
+
 let g:tokyodark_color_gamma = "1.2"
 
 let g:onedark_config = {
@@ -37,22 +39,29 @@ let g:SignatureMarkTextHL = 'LineNr'
 call plug#begin('~/.config/nvim/plugins')
 	" themes
 	Plug 'tiagovla/tokyodark.nvim'
+	Plug 'rebelot/kanagawa.nvim'
 	Plug 'EdenEast/nightfox.nvim'
 	Plug 'navarasu/onedark.nvim'
 	Plug 'drewtempelmeyer/palenight.vim', { 'frozen': 1 }
 	Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 	Plug 'sainnhe/gruvbox-material', { 'frozen': 1 }
+	Plug 'marko-cerovac/material.nvim'
 	Plug 'morhetz/gruvbox'
 	Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 	Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
+	Plug 'arcticicestudio/nord-vim'
+
 	Plug 'kyazdani42/nvim-web-devicons', { 'frozen': 1 }
 	Plug 'ryanoasis/vim-devicons'
 
 	Plug 'neoclide/coc.nvim', { 'branch' : 'master', 'do': 'yarn install --frozen-lockfile' }
 	Plug 'github/copilot.vim', { 'branch': 'release' }
 	"Plug 'dense-analysis/ale'
+	Plug 'mfussenegger/nvim-dap'
+	Plug 'rcarriga/nvim-dap-ui'
 
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	Plug 'theHamsta/nvim-dap-virtual-text'
 	Plug 'tikhomirov/vim-glsl'
 	"Plug 'sheerun/vim-polyglot'
 	Plug 'p00f/nvim-ts-rainbow'
@@ -61,6 +70,9 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'nvim-lualine/lualine.nvim'
 
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+	Plug 'junegunn/fzf.vim'
+	Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+
 	Plug 'liuchengxu/vista.vim'
 
 	Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
@@ -78,7 +90,11 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'skywind3000/asyncrun.vim'
 	Plug 'sarahkittyy/vim-vue', { 'frozen': 1 }
 	Plug 'mg979/vim-visual-multi'
+
 	Plug 'tpope/vim-fugitive'
+	Plug 'junkblocker/patchreview-vim'
+	Plug 'codegram/vim-codereview'
+
 	Plug 'rhysd/vim-clang-format'
 	Plug 'AndrewRadev/tagalong.vim'
 	Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
@@ -90,7 +106,6 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'xolox/vim-misc'
 
 	Plug 'nvim-lua/plenary.nvim'
-	Plug 'kkharji/sqlite.lua'
 
 	"Plug 'preservim/nerdtree'
 	"Plug 'Xuyuanp/nerdtree-git-plugin', { 'frozen': 1 }
@@ -108,6 +123,7 @@ set softtabstop=4
 set noexpandtab
 set completeopt=menuone,noinsert,noselect
 set hidden
+set re=2
 set noequalalways
 set listchars=tab:\|\ 
 set nolist
@@ -155,8 +171,6 @@ set pyxversion=3
 set termguicolors
 set background=dark
 
-colorscheme tokyodark
-
 " patch to fix #pragma once annoyance
 hi! link TSError NONE
 hi! TabLineSel guifg=#78A2CC
@@ -182,9 +196,7 @@ augroup all
 	au!
 	au BufEnter * call CloseHiddenBuffers()
 	au VimLeave * set guicursor=a:ver1-blinkon1
-	au TermOpen * tnoremap <buffer> <Esc> <C-\><C-n>
 	au VimLeave * wshada!
-	au Filetype fzf tunmap <buffer> <Esc>
 	au BufNewFile,BufRead /*.rasi setf css
 	au BufNewFile,BufRead *.ipynb setfiletype python
 	"autocmd BufWritePost $MYVIMRC call ReloadVimrc()
@@ -213,14 +225,18 @@ augroup maps
 	autocmd Filetype c,cpp nnoremap <buffer><leader>C :<C-u>ClangFormat<CR>
 	autocmd Filetype html,vue,jsx imap <leader>f </<C-x><C-o><TAB><Esc>F<i
 	autocmd Filetype html,vue,jsx nmap <leader>f a</<C-x><C-o><TAB><Esc>F<i
+	au TermOpen * tnoremap <buffer> <Esc> <C-\><C-n>
+	au Filetype fzf tunmap <buffer> <Esc>
 augroup END
 
+nnoremap z= <C-w>=
 "nmap <C-n> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 nnoremap <C-n> :NvimTreeToggle<CR>
 nmap gl :NvimTreeFocus<CR>
 nmap <C-e> :RunFile<CR>
-nnoremap <C-f> <cmd>Telescope find_files<CR>
-nnoremap <C-s> <cmd>Telescope live_grep<CR>
+nnoremap <C-f> <cmd>History<CR>
+nnoremap <C-s> <cmd>Rg<CR>
+nnoremap F <cmd>Files<CR>
 cnoremap <Up> <C-p>
 cnoremap <Down> <C-n>
 nnoremap <silent><expr> <c-space> coc#refresh()
@@ -237,23 +253,29 @@ tnoremap <s-BS> <BS>
 tnoremap <C-BS> <C-w>
 imap <silent><script><expr> <C-J> copilot#Accept("")
 
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>qf  <Plug>(coc-fix-current)
-nmap <leader>cl  <Plug>(coc-codelens-action)
+" nvim-dap bindings
+nmap <silent> <leader>du :lua require'dapui'.toggle()<CR>
+nmap <silent> <leader>dc :lua require'dap'.continue()<CR>
+nmap <silent> <leader>ds :lua require'dap'.step_over()<CR>
+nmap <silent> <leader>di :lua require'dap'.step_into()<CR>
+nmap <silent> <leader>do :lua require'dap'.step_out()<CR>
+nmap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>
+nmap <silent> <leader>dB :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nmap <silent> <leader>dR :lua require'dap'.run_to_cursor()<CR>
+nmap <silent> <leader>dr :lua require'dap'.repl.open()<CR>
+nmap <silent> <leader>dl :lua require'dap'.run_last()<CR>
 
 nnoremap <silent><nowait> gs :Vista finder<CR>
-nmap <F2> <Plug>(coc-rename)
 nmap <C-p> :CtrlP getcwd()<CR>
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
 vmap <silent> <C-c> <Plug>NERDCommenterToggle<CR>gv
 nmap <silent> <C-c> <Plug>NERDCommenterToggle
 map <expr><silent> <F5> 
 	\ expand('%:e') ==? 'cpp' ? "\<C-w>v\<C-w>w:call CurtineIncSw()\<CR>\<C-w>h" :
-	\ expand('%:e') ==? 'c' ? "\<C-w>v\<C-w>w:call CurtineIncSw()\<CR>\<C-w>h" : "\<C-w>v\<F6>"
-map <F6> :call CurtineIncSw()<CR>
+	\ expand('%:e') ==? 'c' ? "\<C-w>v\<C-w>w:call CurtineIncSw()\<CR>\<C-w>h" : "\<C-w>v\<F7>"
+map <expr><silent> <F6> 
+	\ expand('%:e') ==? 'cpp' ? "\<C-w>s:call CurtineIncSw()\<CR>z40\<CR>\<C-w>j" :
+	\ expand('%:e') ==? 'c' ? "\<C-w>s:call CurtineIncSw()\<CR>z40\<CR>\<C-w>j" : "\<C-w>s\<F7>"
+map <F7> :call CurtineIncSw()<CR>
 "map <F5> :CocCommand clangd.switchSourceHeader<CR>
 "map <F6> :CocCommand clangd.switchSourceHeader vsplit<CR>
 nnoremap <leader>g :AsyncTask generate<CR>
@@ -262,8 +284,6 @@ nnoremap <leader>r :AsyncTask run<CR>
 nnoremap <leader>b :AsyncTask build<CR>
 nnoremap <leader>s :AsyncStop<CR>
 nmap <leader>R :call RefreshAll()<CR>
-nmap <leader>n ma
-nmap <leader>d mdy
 "nmap <leader>e 
 nmap <silent> <s-t> :if &ft ==? "NvimTree" \| wincmd l \| endif \| FloatermToggle<CR>
 nmap <C-s-t> :ToggleTerminal<CR>
@@ -281,6 +301,14 @@ xnoremap <silent>       <leader>jv  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <leader>jc :MagmaReevaluateCell<CR>
 nnoremap <silent>       <leader>jd :MagmaDelete<CR>
 " coc
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cl  <Plug>(coc-codelens-action)
+nmap <F2> <Plug>(coc-rename)
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 inoremap <silent><expr> <Down>
 	\ coc#pum#visible() ? coc#pum#next(1) :
   \ pumvisible() ? "\<C-n>" :
@@ -305,11 +333,29 @@ command! GuiConfig :e ~/.config/nvim/ginit.vim
 command! RunnerConfig :e ~/.config/nvim/runners.vim
 command! Reload :call ReloadVimrc()
 command! -nargs=1 -complete=file Wcd :exe "normal :cd <args><CR>,l"
+command! MaterialSwitch :lua require('material.functions').find_style()
 
 " language runners
 source ~/.config/nvim/runners.vim
 
 " PLUGIN CONFIG -------------------------------------------
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+let g:fzf_preview_window = ['right,50%,<5(up,40%)', 'ctrl-/']
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 let g:asyncrun_open = 6
 let g:asynctasks_term_pos = 'bottom'
 
@@ -346,6 +392,9 @@ let g:WebDevIconsDisableDefaultFolderSymbolColorFromNERDTreeDir = 1
 let g:WebDevIconsDisableDefaultFileSymbolColorFromNERDTreeFile = 1
 let g:NERDTreeHighlightFolders = 1 " enables folder icon highlighting using exact match
 
+let g:floaterm_width = 0.8
+let g:floaterm_height = 0.8
+
 let g:workspace_autosave_ignore = ['nerdtree']
 
 let g:session_directory = $HOME . '/.vim/sessions/'
@@ -359,6 +408,9 @@ let g:clang_format#enable_fallback_style = 0
 let g:clang_format#auto_format = 0
 
 let g:copilot_no_tab_map = v:true
+let g:copilot_filetypes = {
+	\ 'dap-repl': v:false,
+	\ }
 
 let g:neoterm_size=15
 
@@ -379,21 +431,6 @@ let g:tex_flavor='latex'
 let g:doge_mapping='<leader>D'
 
 let g:vue_pre_processors = 'detect_on_enter'
-
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
 
 let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
 
@@ -466,6 +503,31 @@ function _G.ExpandAll()
     iter(nodes)
 end
 
+local lib = require("nvim-tree.lib")
+local api = require("nvim-tree.api")
+
+local git_add = function()
+  local node = lib.get_node_at_cursor()
+  local gs = node.git_status
+
+  -- If the file is untracked, unstaged or partially staged, we stage it
+  if gs == "??" or gs == "MM" or gs == "AM" or gs == " M" then
+    vim.cmd("silent !git add " .. node.absolute_path)
+
+  -- If the file is staged, we unstage
+  elseif gs == "M " or gs == "A " then
+    vim.cmd("silent !git restore --staged " .. node.absolute_path)
+  end
+
+  lib.refresh_tree()
+end
+
+local swap_then_open_tab = function()
+	local node = lib.get_node_at_cursor()
+	vim.cmd("wincmd l")
+	api.node.open.tab(node)
+end
+
 -- LUA CONFIG ------------------------------------------
 require('gitsigns').setup {
   signs = {
@@ -476,6 +538,150 @@ require('gitsigns').setup {
     changedelete = {hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
   },
 }
+
+local dap = require('dap')
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/usr/sbin/lldb-vscode',
+  name = "lldb"
+}
+dap.configurations.cpp = {
+  {
+    name = 'Launch',
+    type = 'lldb',
+    request = 'launch',
+	program = function()
+		return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+	end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+
+    -- 💀
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    -- runInTerminal = false,
+  },
+}
+-- dap.configurations.cpp = {
+--     {
+--       -- If you get an "Operation not permitted" error using this, try disabling YAMA:
+--       --  echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+--       name = "Attach to process",
+--       type = 'lldb',  -- Adjust this to match your adapter name (`dap.adapters.<name>`)
+--       request = 'attach',
+--       pid = require('dap.utils').pick_process,
+--       args = {},
+--     },
+-- }
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
+require("nvim-dap-virtual-text").setup {
+    enabled = true,
+    enabled_commands = true,               -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+    highlight_changed_variables = true,    -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+    highlight_new_as_changed = false,      -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+    show_stop_reason = true,               -- show stop reason when stopped for exceptions
+    commented = false,                     -- prefix virtual text with comment string
+    only_first_definition = true,          -- only show virtual text at first definition (if there are multiple)
+    all_references = false,                -- show virtual text on all all references of the variable (not only definitions)
+    filter_references_pattern = '<module', -- filter references (not definitions) pattern when all_references is activated (Lua gmatch pattern, default filters out Python modules)
+    -- experimental features:
+    virt_text_pos = 'eol',                 -- position of virtual text, see `:h nvim_buf_set_extmark()`
+    all_frames = false,                    -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+    virt_lines = false,                    -- show virtual lines instead of virtual text (will flicker!)
+    virt_text_win_col = nil                -- position the virtual text at a fixed window column (starting from the first text column) ,
+}
+
+require("dapui").setup({
+  icons = { expanded = "", collapsed = "", current_frame = "" },
+  mappings = {
+    -- Use a table to apply multiple mappings
+    expand = { "<CR>", "<2-LeftMouse>" },
+    open = "o",
+    remove = "d",
+    edit = "e",
+    repl = "r",
+    toggle = "t",
+  },
+  -- Use this to override mappings for specific elements
+  element_mappings = {
+    -- Example:
+    -- stacks = {
+    --   open = "<CR>",
+    --   expand = "o",
+    -- }
+  },
+  -- Expand lines larger than the window
+  -- Requires >= 0.7
+  expand_lines = vim.fn.has("nvim-0.7") == 1,
+  -- Layouts define sections of the screen to place windows.
+  -- The position can be "left", "right", "top" or "bottom".
+  -- The size specifies the height/width depending on position. It can be an Int
+  -- or a Float. Integer specifies height/width directly (i.e. 20 lines/columns) while
+  -- Float value specifies percentage (i.e. 0.3 - 30% of available lines/columns)
+  -- Elements are the elements shown in the layout (in order).
+  -- Layouts are opened in order so that earlier layouts take priority in window sizing.
+  layouts = {
+    {
+      elements = {
+      -- Elements can be strings or table with id and size keys.
+        { id = "scopes", size = 0.25 },
+        "breakpoints",
+        "stacks",
+        "watches",
+      },
+      size = 40, -- 40 columns
+      position = "left",
+    },
+    {
+      elements = {
+        "repl",
+        "console",
+      },
+      size = 0.25, -- 25% of total lines
+      position = "bottom",
+    },
+  },
+  controls = {
+    -- Requires Neovim nightly (or 0.8 when released)
+    enabled = true,
+    -- Display controls in this element
+    element = "repl",
+    icons = {
+      pause = "",
+      play = "",
+      step_into = "",
+      step_over = "",
+      step_out = "",
+      step_back = "",
+      run_last = "",
+      terminate = "",
+    },
+  },
+  floating = {
+    max_height = nil, -- These can be integers or a float between 0 and 1.
+    max_width = nil, -- Floats will be treated as percentage of your screen.
+    border = "single", -- Border style. Can be "single", "double" or "rounded"
+    mappings = {
+      close = { "q", "<Esc>" },
+    },
+  },
+  windows = { indent = 1 },
+  render = {
+    max_type_length = nil, -- Can be integer or nil.
+    max_value_lines = 100, -- Can be integer or nil.
+  }
+})
 
 require('nightfox').setup({
 	options = {
@@ -495,19 +701,52 @@ require('catppuccin').setup({
 	}
 })
 
+require('kanagawa').setup({
+    undercurl = false,           -- enable undercurls
+    commentStyle = { italic = true },
+    functionStyle = {},
+    keywordStyle = { italic = true},
+    statementStyle = { bold = true },
+    typeStyle = {},
+    variablebuiltinStyle = { italic = true},
+    specialReturn = true,       -- special highlight for the return keyword
+    specialException = true,    -- special highlight for exception handling keywords
+    transparent = false,        -- do not set background color
+    dimInactive = false,        -- dim inactive window `:h hl-NormalNC`
+    globalStatus = false,       -- adjust window separators highlight for laststatus=3
+    terminalColors = true,      -- define vim.g.terminal_color_{0,17}
+    colors = {},
+    overrides = {},
+    theme = "default"           -- Load "default" theme or the experimental "light" theme
+})
+
+vim.cmd("colorscheme kanagawa")
 require('lualine').setup {
  	options = {
  		icons_enabled = false,
- 		theme = 'tokyonight',
+ 		theme = 'kanagawa',
  		component_separators = { left = '', right = ''},
  		section_separators = { left = '', right = ''},
- 		disabled_filetypes = {},
+ 		disabled_filetypes = {
+				'NvimTree',
+		},
  		always_divide_middle = true,
  	},
  	sections = {
  		lualine_a = {'mode'},
  		lualine_b = {'filename'},
- 		lualine_c = {'branch', 'diff', 'diagnostics', 'NearestMethodOrFunction' },
+ 		lualine_c = {
+			{
+				'branch',
+				icons_enabled = true
+			},
+			'diff',
+			{
+					'diagnostics',
+					symbols = {error = 'e:', warn = 'w:', info = 'i:', hint = 'h:'},
+			},
+			'NearestMethodOrFunction'
+		},
  		lualine_x = {},
  		lualine_y = {
 			{
@@ -525,7 +764,10 @@ require('lualine').setup {
  		lualine_y = {'filetype' },
  		lualine_z = {'location', 'encoding' }
  	},
- 	extensions = { 'nvim-tree' }
+ 	extensions = { 'nvim-tree' },
+	refresh = {
+		statusline = 1500
+	}
 }
 require('nvim-tree').setup {
 	filters = {
@@ -589,7 +831,7 @@ require('nvim-tree').setup {
 				{ key = {"O"},    cb=":call v:lua.ExpandAll()<CR>" },
 				{ key = "s",                        action = "vsplit" },
 				{ key = "i",                        action = "split" },
-				{ key = "t",                        action = "tabnew" },
+				{ key = "t",                        action = "swap_then_open_tab", action_cb = swap_then_open_tab },
 				--{ key = "<",                            action = "prev_sibling" },
 				--{ key = ">",                            action = "next_sibling" },
 				--{ key = "P",                            action = "parent_node" },
@@ -615,6 +857,7 @@ require('nvim-tree').setup {
 				{ key = "<leader>u",                            action = "dir_up" },
 				--{ key = "q",                            action = "close" },
 				{ key = "?",                           action = "toggle_help" },
+				{ key = "ga", action = "git_add", action_cb = git_add },
 			}
 		}
 	}
@@ -627,7 +870,19 @@ require('telescope').setup {
         ["<C-f>"] = "close",
         ["<C-s>"] = "close"
       }
-    }
+    },
+	layout_strategy = "flex",
+	layout_config = {
+		flex = {
+			flip_columns = 500
+		},
+		vertical = {
+			width = 0.9
+		},
+		horizontal = {
+			width = 0.9
+		}
+	}
   },
   pickers = {
 	find_files = {
@@ -637,15 +892,21 @@ require('telescope').setup {
 	}
   },
   extensions = {
-	frecency = {
-		ignore_patterns = { "*.git/*", "*/node_modules/*", "*/build/*" },
-		disable_devicons = true,
-		show_unindexed = false,
-		default_workspace = 'CWD'
-	}
+		frecency = {
+			ignore_patterns = { "*.git/*", "*/node_modules/*", "*/build/*", "*/dist/*" },
+			disable_devicons = false,
+			show_unindexed = false,
+			default_workspace = 'CWD'
+		},
+		fzf = {
+			fuzzy = true,
+			override_generic_sorter = true,
+			override_file_sorter = true,
+			case_mode = "smart_case",
+		}
   }
 }
--- require('telescope').load_extension('frecency')
+require('telescope').load_extension('fzf')
 
 require'nvim-treesitter.configs'.setup {
 	ignore_install = { "latex" },
@@ -831,5 +1092,5 @@ endfunction
 " NVUI CONFIG ----------------------------------------
 if exists('g:nvui')
 	set guifont=FiraCode\ Nerd\ Font\ Mono:w53:h10
-	:NvuiAnimationsEnabled v:false
+	":NvuiAnimationsEnabled v:false
 endif
