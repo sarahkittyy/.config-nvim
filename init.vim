@@ -51,6 +51,8 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
 	Plug 'arcticicestudio/nord-vim'
 
+	Plug 'jackMort/ChatGPT.nvim'
+
 	Plug 'kyazdani42/nvim-web-devicons', { 'frozen': 1 }
 	Plug 'ryanoasis/vim-devicons'
 
@@ -79,11 +81,11 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'nathanaelkane/vim-indent-guides'
 	Plug 'mattn/emmet-vim'
 	Plug 'lewis6991/gitsigns.nvim'
+  Plug 'chentoast/marks.nvim'
 	Plug 'caenrique/nvim-toggle-terminal'
 	Plug 'equalsraf/neovim-gui-shim'
 	Plug 'nvim-telescope/telescope.nvim'
 	Plug 'kyazdani42/nvim-tree.lua'
-	Plug 'kshenoy/vim-signature'
 	Plug 'preservim/nerdcommenter'
 	Plug 'ericcurtin/CurtineIncSw.vim'
 	Plug 'skywind3000/asynctasks.vim'
@@ -106,6 +108,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'xolox/vim-misc'
 
 	Plug 'nvim-lua/plenary.nvim'
+	Plug 'MunifTanjim/nui.nvim'
 
 	"Plug 'preservim/nerdtree'
 	"Plug 'Xuyuanp/nerdtree-git-plugin', { 'frozen': 1 }
@@ -163,6 +166,8 @@ set ssop+=tabpages
 set ssop+=winsize
 set ssop+=winpos
 set ssop+=resize
+
+set shada=!,'300,<50,s10,h
 
 set tal=%!MyTabLine()
 
@@ -234,9 +239,11 @@ nnoremap z= <C-w>=
 nnoremap <C-n> :NvimTreeToggle<CR>
 nmap gl :NvimTreeFocus<CR>
 nmap <C-e> :RunFile<CR>
-nnoremap <C-f> <cmd>History<CR>
-nnoremap <C-s> <cmd>Rg<CR>
-nnoremap F <cmd>Files<CR>
+nnoremap <C-f> <cmd>FzfHistory<CR>
+nnoremap <C-s> <cmd>FzfRg<CR>
+nnoremap F <cmd>FzfFiles<CR>
+nnoremap <leader>fg <cmd>FzfGFiles?<CR>
+nnoremap <leader>fc <cmd>FzfCommits<CR>
 cnoremap <Up> <C-p>
 cnoremap <Down> <C-n>
 nnoremap <silent><expr> <c-space> coc#refresh()
@@ -248,6 +255,8 @@ inoremap {<CR>  {<CR>}<Esc>O
 inoremap {}     {}
 inoremap {<Right> {<Right>
 inoremap {<space> { 
+nnoremap <leader>ai :ChatGPT<CR>
+
 tnoremap <s-space> <space>
 tnoremap <s-BS> <BS>
 tnoremap <C-BS> <C-w>
@@ -340,7 +349,8 @@ source ~/.config/nvim/runners.vim
 
 " PLUGIN CONFIG -------------------------------------------
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-let g:fzf_preview_window = ['right,50%,<5(up,40%)', 'ctrl-/']
+let g:fzf_preview_window = ['right,50%,<140(up,40%)', 'ctrl-/']
+let g:fzf_command_prefix = 'Fzf'
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
   \ 'bg':      ['bg', 'Normal'],
@@ -355,6 +365,10 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+"let g:fugitive_git_executable = '/mnt/c/PROGRA~1/Git/cmd/git.exe'
+
+let g:nvim_tree_git_hl = 0
 
 let g:asyncrun_open = 6
 let g:asynctasks_term_pos = 'bottom'
@@ -529,6 +543,78 @@ local swap_then_open_tab = function()
 end
 
 -- LUA CONFIG ------------------------------------------
+require'marks'.setup {
+  -- whether to map keybinds or not. default true
+  default_mappings = true,
+  -- which builtin marks to show. default {}
+  builtin_marks = { },
+  -- whether movements cycle back to the beginning/end of buffer. default true
+  cyclic = true,
+  -- whether the shada file is updated after modifying uppercase marks. default false
+  force_write_shada = false,
+  -- how often (in ms) to redraw signs/recompute mark positions. 
+  -- higher values will have better performance but may cause visual lag, 
+  -- while lower values may cause performance penalties. default 150.
+  refresh_interval = 1000,
+  -- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
+  -- marks, and bookmarks.
+  -- can be either a table with all/none of the keys, or a single number, in which case
+  -- the priority applies to all marks.
+  -- default 10.
+  sign_priority = { lower=10, upper=15, builtin=8, bookmark=20 },
+  -- disables mark tracking for specific filetypes. default {}
+  excluded_filetypes = {},
+  mappings = {}
+}
+
+require'chatgpt'.setup {
+	welcome_message = WELCOME_MESSAGE, -- set to "" if you don't like the fancy robot
+  loading_text = "loading",
+  question_sign = "", -- you can use emoji if you want e.g. 🙂
+  answer_sign = "|",
+  max_line_length = 180,
+  chat_layout = {
+    relative = "editor",
+    position = "50%",
+    size = {
+      height = "80%",
+      width = "80%",
+    },
+  },
+  chat_window = {
+    border = {
+      highlight = "FloatBorder",
+      style = "rounded",
+      text = {
+        top = " ChatGPT ",
+      },
+    },
+  },
+  chat_input = {
+    prompt = "  ",
+    border = {
+      highlight = "FloatBorder",
+      style = "rounded",
+      text = {
+        top_align = "center",
+        top = " Prompt ",
+      },
+    },
+    win_options = {
+      winhighlight = "Normal:Normal",
+    },
+  },
+  openai_params = {
+    model = "text-davinci-003",
+    frequency_penalty = 0,
+    presence_penalty = 0,
+    max_tokens = 300,
+    temperature = 0,
+    top_p = 1,
+    n = 1,
+  },
+}
+
 require('gitsigns').setup {
   signs = {
     add          = {hl = 'GitSignsAdd'   , text = '+', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
@@ -764,7 +850,7 @@ require('lualine').setup {
  		lualine_y = {'filetype' },
  		lualine_z = {'location', 'encoding' }
  	},
- 	extensions = { 'nvim-tree' },
+ 	extensions = { 'nvim-tree', 'nvim-dap-ui', 'fzf', 'fugitive' },
 	refresh = {
 		statusline = 1500
 	}
@@ -774,8 +860,8 @@ require('nvim-tree').setup {
 		dotfiles = true
 	},
 	git = {
-		enable = true,
-		ignore = false,
+		enable = false,
+		ignore = true,
 		timeout = 500
 	},
 	actions = {
@@ -784,9 +870,10 @@ require('nvim-tree').setup {
 		}
 	},
 	renderer = {
+		highlight_git = false,
 		icons = {
 			show = {
-				git = true,
+				git = false,
 				folder = true,
 				file = true,
 				folder_arrow = true

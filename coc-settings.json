@@ -69,7 +69,7 @@
   "json.enable": false,
   "suggest.completionItemKindLabels": {
     "method": "  method",
-    "function": "  fn",
+    "function": "λ fn",
     "variable": "[] var",
     "field": "  field",
     "typeParameter": "<> type",
