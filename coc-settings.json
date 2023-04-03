@@ -62,9 +62,10 @@
   "javascript.validate.enable": false,
   "suggest.minTriggerInputLength": 2,
   "eslint.autoFixOnSave": true,
-  "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "javascriptreact"],
+  "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "vue"],
   "prettier.requireConfig": true,
   "eslint.validate": ["javascript", "typescript"],
+  "vetur.useWorkspaceDependencies": true,
   "eslint.lintTask.options": [".", "--ext", ".ts"],
   "json.enable": false,
   "suggest.completionItemKindLabels": {
