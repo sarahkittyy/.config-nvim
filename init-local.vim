@@ -66,7 +66,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'theHamsta/nvim-dap-virtual-text'
 	Plug 'tikhomirov/vim-glsl'
 	"Plug 'sheerun/vim-polyglot'
-	Plug 'p00f/nvim-ts-rainbow'
+	Plug 'HiPhish/nvim-ts-rainbow2'
 	Plug 'lervag/vimtex'
 
 	Plug 'nvim-lualine/lualine.nvim'
@@ -88,7 +88,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'equalsraf/neovim-gui-shim'
 	Plug 'nvim-telescope/telescope.nvim'
 
-	Plug 'kyazdani42/nvim-tree.lua'
+	"Plug 'kyazdani42/nvim-tree.lua'
 	Plug 'nvim-neo-tree/neo-tree.nvim'
 
 	Plug 'preservim/nerdcommenter'
@@ -439,7 +439,7 @@ let g:clang_format#auto_format = 0
 
 let g:copilot_no_tab_map = v:true
 let g:copilot_filetypes = {
-	\ 'dap-repl': v:false,
+	\ 'dap*': v:false,
 	\ }
 
 let g:neoterm_size=15
@@ -506,60 +506,38 @@ local function collapseNode (node)
   node.open = false
 end
 
-function _G.nvimTreeCollapse()
-  local lib = require'nvim-tree.lib'
-  collapseNode(lib.Tree)
-  lib.refresh_tree()
-end
-function _G.ExpandAll()
-    local nvimlib = require('nvim-tree.lib')
-    local function iter(nodes)
-        for _, node in pairs(nodes) do
-            if not node.open and node.nodes then
-                nvimlib.expand_or_collapse(node)
-            end
-            if node.nodes then
-                iter(node.nodes)
-            end
-        end
-    end
+-- function _G.nvimTreeCollapse()
+  -- local lib = require'nvim-tree.lib'
+  -- collapseNode(lib.Tree)
+  -- lib.refresh_tree()
+-- end
+-- function _G.ExpandAll()
+    -- local nvimlib = require('nvim-tree.lib')
+    -- local function iter(nodes)
+        -- for _, node in pairs(nodes) do
+            -- if not node.open and node.nodes then
+                -- nvimlib.expand_or_collapse(node)
+            -- end
+            -- if node.nodes then
+                -- iter(node.nodes)
+            -- end
+        -- end
+    -- end
+-- 
+    -- local nodes = {}
+    -- local currnode = nvimlib.get_node_at_cursor()
+    -- if currnode == nil then
+        -- return
+    -- end
+    -- nodes = {currnode}
+    -- iter(nodes)
+-- end
 
-    local nodes = {}
-    local currnode = nvimlib.get_node_at_cursor()
-    if currnode == nil then
-        return
-    end
-    nodes = {currnode}
-    iter(nodes)
-end
-
-local lib = require("nvim-tree.lib")
-local api = require("nvim-tree.api")
-
-local git_add = function()
-  local node = lib.get_node_at_cursor()
-  local gs = node.git_status
-
-  -- If the file is untracked, unstaged or partially staged, we stage it
-  if gs == "??" or gs == "MM" or gs == "AM" or gs == " M" then
-    vim.cmd("silent !git add " .. node.absolute_path)
-
-  -- If the file is staged, we unstage
-  elseif gs == "M " or gs == "A " then
-    vim.cmd("silent !git restore --staged " .. node.absolute_path)
-  end
-
-  lib.refresh_tree()
-end
-
-local swap_then_open_tab = function()
-	local node = lib.get_node_at_cursor()
-	vim.cmd("wincmd l")
-	api.node.open.tab(node)
-end
+-- local lib = require("nvim-tree.lib")
+-- local api = require("nvim-tree.api")
 
 -- LUA CONFIG ------------------------------------------
-
+ 
 require'marks'.setup {
   -- whether to map keybinds or not. default true
   default_mappings = true,
@@ -914,100 +892,66 @@ require('lualine').setup {
 		statusline = 1500
 	}
 }
-require('nvim-tree').setup {
-	filters = {
-		dotfiles = true
-	},
-	git = {
-		enable = false,
-		ignore = true,
-		timeout = 500
-	},
-	actions = {
-		change_dir = {
-			global = true
-		}
-	},
-	renderer = {
-		highlight_git = false,
-		icons = {
-			show = {
-				git = false,
-				folder = true,
-				file = true,
-				folder_arrow = true
-			},
-			glyphs = {
-				default= "",
-				symlink= "",
-				git = {
-				  unstaged = "✗",
-				  staged = "✓",
-				  unmerged = "",
-				  renamed = "➜",
-				  untracked = "★",
-				  deleted = "",
-				  ignored = ""
-				},
-				folder = {
-				  arrow_open = "",
-				  arrow_closed = "",
-				  default = "",
-				  open = "",
-				  empty = "",
-				  empty_open = "",
-				  symlink = "",
-				  symlink_open = "",
-				}
-			}
-		}
-	},
-	open_on_tab = true,
-	update_cwd = false,
-	respect_buf_cwd = false,
-	view = {
-		relativenumber = false,
-		preserve_window_proportions = true,
-		mappings = {
-			custom_only = true,
-			list = {
-				{ key = {"<CR>", "<2-LeftMouse>"}, action = "edit" },
-				{ key = {"<S-CR>", "<2-LeftMouse>"}, action = "edit_no_picker" },
-				{ key = {"e"},    action = "cd" },
-				{ key = {"O"},    cb=":call v:lua.ExpandAll()<CR>" },
-				{ key = "s",                        action = "vsplit" },
-				{ key = "i",                        action = "split" },
-				{ key = "t",                        action = "swap_then_open_tab", action_cb = swap_then_open_tab },
-				--{ key = "<",                            action = "prev_sibling" },
-				--{ key = ">",                            action = "next_sibling" },
-				--{ key = "P",                            action = "parent_node" },
-				--{ key = "<BS>",                         action = "close_node" },
-				--{ key = "K",                            action = "first_sibling" },
-				--{ key = "J",                            action = "last_sibling" },
-				{ key = "H",                            action = "toggle_ignored" },
-				{ key = "I",                            action = "toggle_dotfiles" },
-				{ key = "R",                            action = "refresh" },
-				{ key = "<leader>n",                            action = "create" },
-				{ key = "<leader>d",                            action = "remove" },
-				--{ key = "D",                            action = "trash" },
-				{ key = "r",                            action = "rename" },
-				--{ key = "<C-r>",                        action = "full_rename" },
-				{ key = "m",                            action = "cut" },
-				{ key = "y",                            action = "copy" },
-				{ key = "p",                            action = "paste" },
-				--{ key = "y",                            action = "copy_name" },
-				--{ key = "Y",                            action = "copy_path" },
-				--{ key = "gy",                           action = "copy_absolute_path" },
-				{ key = "[c",                           action = "prev_git_item" },
-				{ key = "]c",                           action = "next_git_item" },
-				{ key = "<leader>u",                            action = "dir_up" },
-				--{ key = "q",                            action = "close" },
-				{ key = "?",                           action = "toggle_help" },
-				{ key = "ga", action = "git_add", action_cb = git_add },
-			}
-		}
-	}
-}
+-- require('nvim-tree').setup {
+	-- filters = {
+		-- dotfiles = true
+	-- },
+	-- on_attach = on_attach,
+	-- git = {
+		-- enable = false,
+		-- ignore = true,
+		-- timeout = 500
+	-- },
+	-- actions = {
+		-- change_dir = {
+			-- global = true
+		-- }
+	-- },
+	-- renderer = {
+		-- highlight_git = false,
+		-- icons = {
+			-- show = {
+				-- git = false,
+				-- folder = true,
+				-- file = true,
+				-- folder_arrow = true
+			-- },
+			-- glyphs = {
+				-- default= "",
+				-- symlink= "",
+				-- git = {
+				  -- unstaged = "✗",
+				  -- staged = "✓",
+				  -- unmerged = "",
+				  -- renamed = "➜",
+				  -- untracked = "★",
+				  -- deleted = "",
+				  -- ignored = ""
+				-- },
+				-- folder = {
+				  -- arrow_open = "",
+				  -- arrow_closed = "",
+				  -- default = "",
+				  -- open = "",
+				  -- empty = "",
+				  -- empty_open = "",
+				  -- symlink = "",
+				  -- symlink_open = "",
+				-- }
+			-- }
+		-- }
+	-- },
+	-- open_on_tab = true,
+	-- update_cwd = false,
+	-- respect_buf_cwd = false,
+	-- view = {
+		-- relativenumber = false,
+		-- preserve_window_proportions = true,
+		-- mappings = {
+			-- custom_only = true,
+		-- }
+	-- }
+-- }
 require('telescope').setup {
   defaults = {
     mappings = {

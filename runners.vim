@@ -5,7 +5,7 @@ let g:code_runners = {
 	\ 	'javascript': 'node $in',
 	\ 	'haskell': 'runhaskell $in',
 	\	'java': 'java $in',
-	\	'rust': 'cargo script $in',
+	\	'rust': 'rust-script $in',
 	\	'python': 'python $in'
 	\ }
 
