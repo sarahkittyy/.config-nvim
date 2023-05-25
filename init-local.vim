@@ -44,7 +44,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'navarasu/onedark.nvim'
 	Plug 'drewtempelmeyer/palenight.vim', { 'frozen': 1 }
 	Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
-	Plug 'sainnhe/gruvbox-material', { 'frozen': 1 }
+	Plug 'sainnhe/gruvbox-material'
 	Plug 'marko-cerovac/material.nvim'
 	Plug 'morhetz/gruvbox'
 	Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
@@ -144,6 +144,8 @@ filetype plugin indent on
 set nobackup
 set nowritebackup
 
+set background=dark
+
 set mouse=a
 
 set noshowmode
@@ -180,11 +182,14 @@ set tal=%!MyTabLine()
 set pyxversion=3
 
 set termguicolors
-set background=dark
 
 " patch to fix #pragma once annoyance
 hi! link TSError NONE
 hi! TabLineSel guifg=#78A2CC
+hi! TSRainbowRed guifg=#FFABAB
+hi! TSRainbowYellow guifg=#FFFFD1
+hi! TSRainbowGreen guifg=#BFFCCC
+hi! TSRainbowBlue guifg=#97A2FF
 hi SignatureMarkText guibg=#000
 
 " AUTOCOMMANDS ---------------------------------------
@@ -306,6 +311,7 @@ nnoremap <leader>b :AsyncTask build<CR>
 nnoremap <leader>s :AsyncStop<CR>
 nmap <leader>R :call RefreshAll()<CR>
 "nmap <leader>e 
+nmap <silent> <Esc> :cclose<CR>
 nmap <silent> <s-t> :if &ft ==? "neo-tree" \| wincmd l \| endif \| FloatermToggle<CR>
 nmap <C-s-t> :ToggleTerminal<CR>
 nmap <C-w>t :ToggleWindowTerminal<CR>
@@ -836,7 +842,7 @@ require('kanagawa').setup({
 			}
 		}
 	},
-    theme = "default"           -- Load "default" theme or the experimental "light" theme
+    theme = "wave"           -- Load "default" theme or the experimental "light" theme
 })
 
 vim.cmd("colorscheme kanagawa")
@@ -1012,13 +1018,10 @@ require'nvim-treesitter.configs'.setup {
 		enable = true,
 		extended_mode = true,
 		max_file_lines = 10000,
-		colors = {
-			"#FF6663",
-			"#FEB144",
-			"#FDFD97",
-			"#9EE09E",
-			"#9EC1CF",
-			"#CC99C9",
+		hlgroups = {
+			"TSRainbowRed",
+			"TSRainbowYellow",
+			"TSRainbowBlue"
 		}
 	}
 }

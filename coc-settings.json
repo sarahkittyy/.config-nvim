@@ -51,7 +51,9 @@
     "rounded": true
   },
   "rust-analyzer.enable": true,
-  "rust-analyzer.server.path": "/usr/sbin/rust-analyzer",
+  "rust-analyzer.server.path": "/usr/bin/rust-analyzer",
+  "rust-analyzer.diagnostics.enable": true,
+  "rust-analyzer.diagnostics.experimental.enable": true,
   "coc.preferences.semanticTokensHighlights": false,
   "clangd.compilationDatabasePath": "build/",
   "clangd.inlayHints.enable": false,
