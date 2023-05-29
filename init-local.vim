@@ -1,10 +1,4 @@
 " THEME CONFIG / PLUGIN PRELOAD CONFIG ------------------------------------------------------------------
-let g:polyglot_disabled = ['autoindent', 'cpp.plugin', 'typescript.plugin', 'javascript.plugin', 'vue.plugin']
-
-let g:ale_hover_cursor = 0
-let g:ale_completion_enabled = 0
-let g:ale_linters_explicit = 1
-
 let g:gruvbox_material_palette = 'material'
 let g:gruvbox_material_background = 'medium'
 let g:gruvbox_material_enable_bold = 1
@@ -51,22 +45,30 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
 	Plug 'arcticicestudio/nord-vim'
 
-	Plug 'jackMort/ChatGPT.nvim'
-
 	Plug 'kyazdani42/nvim-web-devicons'
 	Plug 'ryanoasis/vim-devicons'
 
-	Plug 'neoclide/coc.nvim', { 'branch' : 'master', 'do': 'yarn install --frozen-lockfile' }
+	Plug 'neovim/nvim-lspconfig'
+	Plug 'onsails/lspkind.nvim'
+	Plug 'hrsh7th/cmp-nvim-lsp'
+	Plug 'hrsh7th/cmp-buffer'
+	Plug 'hrsh7th/cmp-cmdline'
+	Plug 'hrsh7th/cmp-path'
+	Plug 'hrsh7th/nvim-cmp'
+	Plug 'L3MON4D3/LuaSnip', {'tag': 'v1.*', 'do': 'make install_jsregexp' }
+	Plug 'saadparwaiz1/cmp_luasnip'
+	Plug 'simrat39/rust-tools.nvim'
+
 	Plug 'github/copilot.vim', { 'branch': 'release' }
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
 	Plug 'rcarriga/nvim-dap-ui'
 
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	Plug 'HiPhish/nvim-ts-rainbow2'
 	Plug 'theHamsta/nvim-dap-virtual-text'
 	Plug 'tikhomirov/vim-glsl'
 	"Plug 'sheerun/vim-polyglot'
-	Plug 'HiPhish/nvim-ts-rainbow2'
 	Plug 'lervag/vimtex'
 
 	Plug 'nvim-lualine/lualine.nvim'
@@ -82,8 +84,8 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
 	Plug 'nathanaelkane/vim-indent-guides'
 	Plug 'mattn/emmet-vim'
-	Plug 'lewis6991/gitsigns.nvim'
-  Plug 'chentoast/marks.nvim'
+	"Plug 'lewis6991/gitsigns.nvim'
+	Plug 'chentoast/marks.nvim'
 	Plug 'caenrique/nvim-toggle-terminal'
 	Plug 'equalsraf/neovim-gui-shim'
 	Plug 'nvim-telescope/telescope.nvim'
@@ -136,7 +138,7 @@ set re=2
 set equalalways
 set listchars=tab:\|\ 
 set nolist
-set updatetime=300
+set updatetime=350
 set autoread
 filetype plugin on
 filetype plugin indent on
@@ -186,10 +188,6 @@ set termguicolors
 " patch to fix #pragma once annoyance
 hi! link TSError NONE
 hi! TabLineSel guifg=#78A2CC
-hi! TSRainbowRed guifg=#FFABAB
-hi! TSRainbowYellow guifg=#FFFFD1
-hi! TSRainbowGreen guifg=#BFFCCC
-hi! TSRainbowBlue guifg=#97A2FF
 hi SignatureMarkText guibg=#000
 
 " AUTOCOMMANDS ---------------------------------------
@@ -232,7 +230,6 @@ augroup all
 	autocmd Filetype * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 	autocmd Filetype markdown set noexpandtab
 	autocmd Filetype asm setlocal filetype=nasm
-	autocmd VimEnter * call vista#RunForNearestMethodOrFunction()
 augroup END
 
 " MAPPINGS -------------------------------------------
@@ -262,16 +259,12 @@ nnoremap <leader>fg <cmd>FzfGFiles?<CR>
 nnoremap <leader>fc <cmd>FzfCommits<CR>
 cnoremap <Up> <C-p>
 cnoremap <Down> <C-n>
-nnoremap <silent><expr> <c-space> coc#refresh()
-inoremap <silent><expr> <c-space> coc#refresh()
-nnoremap <silent> K :call <SID>show_documentation()<CR>
 inoremap {<CR>      {}<Left>
 inoremap {<ESC> {<ESC>
 inoremap {<CR>  {<CR>}<Esc>O
 inoremap {}     {}
 inoremap {<Right> {<Right>
 inoremap {<space> { 
-nnoremap <leader>ai :ChatGPT<CR>
 
 tnoremap <s-space> <space>
 tnoremap <s-BS> <BS>
@@ -314,7 +307,7 @@ nmap <leader>R :call RefreshAll()<CR>
 nmap <silent> <Esc> :cclose<CR>
 nmap <silent> <s-t> :if &ft ==? "neo-tree" \| wincmd l \| endif \| FloatermToggle<CR>
 nmap <C-s-t> :ToggleTerminal<CR>
-nmap <C-w>t :ToggleWindowTerminal<CR>
+nmap <C-w>t :ToggleTabTerminal<CR>
 nmap <C-t> :Vista!!<CR>
 nmap ,l :call LoadSession()<CR>
 nmap ,s :call SaveSession()<CR>
@@ -328,31 +321,6 @@ nnoremap <silent> <leader>ji :MagmaInit<CR>
 xnoremap <silent>       <leader>jv  :<C-u>MagmaEvaluateVisual<CR>
 nnoremap <silent>       <leader>jc :MagmaReevaluateCell<CR>
 nnoremap <silent>       <leader>jd :MagmaDelete<CR>
-" coc
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nmap <leader>qf  <Plug>(coc-fix-current)
-nmap <leader>cl  <Plug>(coc-codelens-action)
-nmap <F2> <Plug>(coc-rename)
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-inoremap <silent><expr> <Down>
-	\ coc#pum#visible() ? coc#pum#next(1) :
-  \ pumvisible() ? "\<C-n>" :
-	\ "\<Down>"
-inoremap <silent><expr> <Up>
-	\ coc#pum#visible() ? coc#pum#prev(1) :
-  \ pumvisible() ? "\<C-p>" :
-	\ "\<Up>"
-"inoremap <silent><expr> <TAB>
-      "\ coc#pum#visible() ? coc#pum#next(1) :
-      "\ CheckBackspace() ? "\<Tab>" :
-      "\ coc#refresh()
-"inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 inoremap <silent> f<TAB> <TAB>
 
 " COMMANDS -----------------------------------
@@ -395,7 +363,7 @@ let g:neo_tree_remove_legacy_commands = 1
 let g:asyncrun_open = 6
 let g:asynctasks_term_pos = 'bottom'
 
-let g:vista_default_executive = 'coc'
+let g:vista_default_executive = 'nvim_lsp'
 
 let g:indentLine_char = '|'
 let g:indentLine_defaultGroup = 'SpecialKey'
@@ -493,16 +461,9 @@ let g:VM_maps['Find Subword Under'] = 'gb'
 "let g:vue_disable_pre_processors = 1 
 let g:vimtex_matchparen_enabled = 0
 
-let g:coc_snippet_next = '<tab>'
-let g:coc_node_path = '/home/sarahkitty/.nvm/versions/node/v18.9.0/bin/node'
-let g:coc_node_args=['--max-old-space-size=3000']
-
 let g:open_in_insert_mode = 0
 
 lua <<EOF
--- require('feline').setup({
---	  preset = 'default'
--- })
 
 -- LUA FUNCTIONS -------------------------------------------
 local function collapseNode (node)
@@ -512,35 +473,103 @@ local function collapseNode (node)
   node.open = false
 end
 
--- function _G.nvimTreeCollapse()
-  -- local lib = require'nvim-tree.lib'
-  -- collapseNode(lib.Tree)
-  -- lib.refresh_tree()
--- end
--- function _G.ExpandAll()
-    -- local nvimlib = require('nvim-tree.lib')
-    -- local function iter(nodes)
-        -- for _, node in pairs(nodes) do
-            -- if not node.open and node.nodes then
-                -- nvimlib.expand_or_collapse(node)
-            -- end
-            -- if node.nodes then
-                -- iter(node.nodes)
-            -- end
-        -- end
-    -- end
--- 
-    -- local nodes = {}
-    -- local currnode = nvimlib.get_node_at_cursor()
-    -- if currnode == nil then
-        -- return
-    -- end
-    -- nodes = {currnode}
-    -- iter(nodes)
--- end
+-- LSP CONFIG
 
--- local lib = require("nvim-tree.lib")
--- local api = require("nvim-tree.api")
+local lspkind = require'lspkind'
+local cmp = require'cmp'
+cmp.setup({
+	formatting = {
+		format = lspkind.cmp_format({ preset = 'codicons', mode = 'symbol_text' })
+	},
+	snippet = {
+		expand = function(args)
+			require('luasnip').lsp_expand(args.body)
+		end,
+	},
+	window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
+	mapping = {
+		['<CR>'] = cmp.mapping.confirm({ select = false }),
+		['<Up>'] = cmp.mapping.select_prev_item(),
+		['<Down>'] = cmp.mapping.select_next_item(),
+		['<C-Space>'] = cmp.mapping.complete(),
+	},
+	sources = cmp.config.sources({
+		{ name = 'nvim_lsp' },
+		{ name = 'luasnip' }
+	}, {
+		{ name = 'buffer', option = { keyword_length = 2 } },
+		{ name = 'path' },
+	}),
+})
+
+cmp.setup.cmdline('/', {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = 'buffer' }
+	}
+})
+
+cmp.setup.cmdline(':', {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = 'path' }
+	}, {
+		{ name = "cmdline" }
+	}),
+})
+
+local lspconfig = require'lspconfig'
+local capabilities = require'cmp_nvim_lsp'.default_capabilities()
+
+lspconfig.pyright.setup {
+	capabilities = capabilities,
+}
+lspconfig.clangd.setup {
+	capabilities = capabilities,
+}
+lspconfig.volar.setup{
+	filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'},
+	capabilities = capabilities,
+}
+lspconfig.vimls.setup{
+	capabilities = capabilities,
+}
+lspconfig.hls.setup{
+	capabilities = capabilities,
+	filetypes = { 'haskell', 'lhaskell', 'cabal' }
+}
+lspconfig.glslls.setup{}
+
+vim.api.nvim_create_autocmd('LspAttach', {
+	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+	callback = function(ev)
+		local opts = { buffer = ev.buf }
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+		vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+		vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+		vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
+		vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
+		vim.keymap.set('n', '[g', vim.diagnostic.goto_prev, opts)
+		vim.keymap.set('n', ']g', vim.diagnostic.goto_next, opts)
+	end,
+})
+
+require'rust-tools'.setup({
+	tools = {
+		inlay_hints = {
+			auto = false,
+			show_parameter_hints = false,
+		}
+	},
+	server = {
+		standalone = false
+	},
+})
 
 -- LUA CONFIG ------------------------------------------
  
@@ -568,57 +597,6 @@ require'marks'.setup {
   mappings = {}
 }
 
-require'chatgpt'.setup {
-	welcome_message = WELCOME_MESSAGE, -- set to "" if you don't like the fancy robot
-  loading_text = "loading",
-  question_sign = "", -- you can use emoji if you want e.g. 🙂
-  answer_sign = "|",
-  max_line_length = 180,
-  chat_layout = {
-    relative = "editor",
-    position = "50%",
-    size = {
-      height = "80%",
-      width = "80%",
-    },
-  },
-  chat_window = {
-    border = {
-      highlight = "FloatBorder",
-      style = "rounded",
-      text = {
-        top = " ChatGPT ",
-      },
-    },
-  },
-  chat_input = {
-    prompt = "  ",
-    border = {
-      highlight = "FloatBorder",
-      style = "rounded",
-      text = {
-        top_align = "center",
-        top = " Prompt ",
-      },
-    },
-    win_options = {
-      winhighlight = "Normal:Normal",
-    },
-  },
-  openai_params = {
-    model = "text-davinci-003",
-    frequency_penalty = 0,
-    presence_penalty = 0,
-    max_tokens = 300,
-    temperature = 0,
-    top_p = 1,
-    n = 1,
-  },
-}
-
-require('gitsigns').setup {
-}
-
 require'window-picker'.setup {
 	autoselect_one = true,
 	include_current = false,
@@ -639,10 +617,15 @@ require'neo-tree'.setup {
 		mappings = {
 			["z"] = "none",
 			["<CR>"] = "open_with_window_picker",
-			["w"] = "open",
-			["i"] = "open_split"
+			["s"] = "split_with_window_picker",
+			["i"] = "vsplit_with_window_picker"
 		},
 		use_libuv_file_watcher = false
+	},
+	filesystem = {
+		filtered_items = {
+			hide_gitignored = false
+		}
 	},
 	default_component_configs = {
 		icon = {
@@ -833,6 +816,17 @@ require('kanagawa').setup({
     dimInactive = false,        -- dim inactive window `:h hl-NormalNC`
     globalStatus = false,       -- adjust window separators highlight for laststatus=3
     terminalColors = true,      -- define vim.g.terminal_color_{0,17}
+	overrides = function(colors)
+		return {
+			TSRainbowRed = { fg = colors.palette.autumnRed },
+			TSRainbowYellow = { fg = colors.palette.carpYellow },
+			TSRainbowBlue = { fg = colors.palette.dragonBlue },
+			TSRainbowOrange = { fg = colors.palette.surimiOrange },
+			TSRainbowGreen = { fg = colors.palette.springGreen },
+			TSRainbowViolet = { fg = colors.palette.oniViolet },
+			TSRainbowCyan = { fg = colors.palette.waveAqua1 },
+		}
+	end,
 	colors = {
 		theme = {
 			all = {
@@ -845,7 +839,7 @@ require('kanagawa').setup({
     theme = "wave"           -- Load "default" theme or the experimental "light" theme
 })
 
-vim.cmd("colorscheme kanagawa")
+vim.cmd('colorscheme kanagawa')
 require('lualine').setup {
  	options = {
  		icons_enabled = false,
@@ -898,66 +892,7 @@ require('lualine').setup {
 		statusline = 1500
 	}
 }
--- require('nvim-tree').setup {
-	-- filters = {
-		-- dotfiles = true
-	-- },
-	-- on_attach = on_attach,
-	-- git = {
-		-- enable = false,
-		-- ignore = true,
-		-- timeout = 500
-	-- },
-	-- actions = {
-		-- change_dir = {
-			-- global = true
-		-- }
-	-- },
-	-- renderer = {
-		-- highlight_git = false,
-		-- icons = {
-			-- show = {
-				-- git = false,
-				-- folder = true,
-				-- file = true,
-				-- folder_arrow = true
-			-- },
-			-- glyphs = {
-				-- default= "",
-				-- symlink= "",
-				-- git = {
-				  -- unstaged = "✗",
-				  -- staged = "✓",
-				  -- unmerged = "",
-				  -- renamed = "➜",
-				  -- untracked = "★",
-				  -- deleted = "",
-				  -- ignored = ""
-				-- },
-				-- folder = {
-				  -- arrow_open = "",
-				  -- arrow_closed = "",
-				  -- default = "",
-				  -- open = "",
-				  -- empty = "",
-				  -- empty_open = "",
-				  -- symlink = "",
-				  -- symlink_open = "",
-				-- }
-			-- }
-		-- }
-	-- },
-	-- open_on_tab = true,
-	-- update_cwd = false,
-	-- respect_buf_cwd = false,
-	-- view = {
-		-- relativenumber = false,
-		-- preserve_window_proportions = true,
-		-- mappings = {
-			-- custom_only = true,
-		-- }
-	-- }
--- }
+
 require('telescope').setup {
   defaults = {
     mappings = {
@@ -1005,6 +940,8 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('frecency')
 
+local rainbow = require'ts-rainbow'
+
 require'nvim-treesitter.configs'.setup {
 	ignore_install = { "latex" },
 	highlight = {
@@ -1016,13 +953,9 @@ require'nvim-treesitter.configs'.setup {
 	},
 	rainbow = {
 		enable = true,
-		extended_mode = true,
-		max_file_lines = 10000,
-		hlgroups = {
-			"TSRainbowRed",
-			"TSRainbowYellow",
-			"TSRainbowBlue"
-		}
+		disable = { 'html', 'vue' },
+		query ='rainbow-parens',
+		strategy = rainbow.strategy.global,
 	}
 }
 require'nvim-web-devicons'.setup {
@@ -1078,19 +1011,6 @@ function! LightlineFilename()
   return expand('%')
 endfunction
 
-function! StatusDiagnostic() abort
-  let info = get(b:, 'coc_diagnostic_info', {})
-  if empty(info) | return '' | endif
-  let msgs = []
-  if get(info, 'error', 0)
-	call add(msgs, 'E' . info['error'])
-  endif
-  if get(info, 'warning', 0)
-	call add(msgs, 'W' . info['warning'])
-  endif
-  return join(msgs, ' ') . ' ' . get(g:, 'coc_status', '')
-endfunction
-
 function! GetFileTypeIcon(n)
 	let l:bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
 	return WebDevIconsGetFileTypeSymbol(bufname(l:bufnr))
@@ -1120,12 +1040,6 @@ endfunction
 function! RefreshAll()
 	:execute ":wa | %bd | bn"
 	echo "Refreshed to default"
-endfunction
-
-function! s:show_documentation()
-	if (coc#rpc#ready())
-		call CocActionAsync('doHover')
-	endif
 endfunction
 
 function! MyTabLine()
