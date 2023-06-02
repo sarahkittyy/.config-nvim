@@ -542,6 +542,11 @@ lspconfig.hls.setup{
 	filetypes = { 'haskell', 'lhaskell', 'cabal' }
 }
 lspconfig.glslls.setup{}
+local cssls_capabilities = capabilities
+cssls_capabilities.textDocument.completion.completionItem.snippetSupport = true
+lspconfig.cssls.setup{
+  capabilities = cssls_capabilities,
+}
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -549,15 +554,25 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		local opts = { buffer = ev.buf }
 		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-		vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+		vim.keymap.set('n', 'gk', vim.lsp.buf.type_definition, opts)
 		vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 		vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
 		vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
 		vim.keymap.set('n', '[g', vim.diagnostic.goto_prev, opts)
 		vim.keymap.set('n', ']g', vim.diagnostic.goto_next, opts)
+
+		vim.api.nvim_create_autocmd('CursorHold', {
+			callback = function()
+				vim.diagnostic.open_float({ scope = 'cursor', focusable = false })
+			end,
+		})
 	end,
 })
+
+vim.diagnostic.config {
+	virtual_text = false
+}
 
 require'rust-tools'.setup({
 	tools = {
@@ -603,7 +618,6 @@ require'window-picker'.setup {
 	other_win_hl_color = '#2d3149',
 	selection_chars = 'ABCDEFJHIJKLMNOPQRSTUVWXYZ',
 	bo = {
-		buftype = { 'terminal' },
 		filetype = { 'NvimTree', "neo-tree", "qf" }
 	},
 }
@@ -617,10 +631,10 @@ require'neo-tree'.setup {
 		mappings = {
 			["z"] = "none",
 			["<CR>"] = "open_with_window_picker",
-			["s"] = "split_with_window_picker",
-			["i"] = "vsplit_with_window_picker"
+			["i"] = "split_with_window_picker",
+			["s"] = "vsplit_with_window_picker"
 		},
-		use_libuv_file_watcher = false
+		use_libuv_file_watcher = true
 	},
 	filesystem = {
 		filtered_items = {
@@ -953,8 +967,11 @@ require'nvim-treesitter.configs'.setup {
 	},
 	rainbow = {
 		enable = true,
-		disable = { 'html', 'vue' },
-		query ='rainbow-parens',
+		query = {
+		  'rainbow-parens',
+		  html = 'rainbow-tags',
+		  latex = 'rainbow-blocks'
+		},
 		strategy = rainbow.strategy.global,
 	}
 }
