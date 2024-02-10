@@ -22,7 +22,6 @@ let s:font = "FiraCode Nerd Font Mono:w53"
 function! AdjustFontSize(amnt)
 	let s:fontsize = s:fontsize + a:amnt
 	execute 'GuiFont! ' . s:font . ':h' . s:fontsize
-	echom 'Font size is now ' . s:fontsize
 endfunction
 call AdjustFontSize(0)
 

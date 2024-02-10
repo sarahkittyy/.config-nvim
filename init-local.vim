@@ -65,7 +65,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'rcarriga/nvim-dap-ui'
 
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-	Plug 'HiPhish/nvim-ts-rainbow2'
+	Plug 'HiPhish/rainbow-delimiters.nvim'
 	Plug 'theHamsta/nvim-dap-virtual-text'
 	Plug 'tikhomirov/vim-glsl'
 	"Plug 'sheerun/vim-polyglot'
@@ -76,7 +76,6 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 	Plug 'junegunn/fzf.vim'
 	Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-	Plug 'kkharji/sqlite.lua'
 	Plug 'nvim-telescope/telescope-frecency.nvim'
 
 	Plug 'liuchengxu/vista.vim'
@@ -97,7 +96,6 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'ericcurtin/CurtineIncSw.vim'
 	Plug 'skywind3000/asynctasks.vim'
 	Plug 'skywind3000/asyncrun.vim'
-	Plug 'sarahkittyy/vim-vue', { 'frozen': 1 }
 	Plug 'mg979/vim-visual-multi'
 
 	Plug 'tpope/vim-fugitive'
@@ -108,7 +106,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'AndrewRadev/tagalong.vim'
 	Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 	Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-	Plug 'sarahkittyy/vim-session'
+	Plug 'xolox/vim-session'
 
 	Plug 'wesQ3/vim-windowswap'
 	Plug 'voldikss/vim-floaterm'
@@ -265,6 +263,11 @@ inoremap {<CR>  {<CR>}<Esc>O
 inoremap {}     {}
 inoremap {<Right> {<Right>
 inoremap {<space> { 
+
+map k gk
+map j gj
+map $ g$
+map ^ g^
 
 tnoremap <s-space> <space>
 tnoremap <s-BS> <BS>
@@ -436,8 +439,6 @@ let g:doge_mapping='<leader>D'
 
 let g:vue_pre_processors = 'detect_on_enter'
 
-let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
-
 let g:NERDTreeDirArrows = 1
 let g:NERDTreeGitStatusIndicatorMapCustom = {
                 \ 'Modified'  :'✹',
@@ -554,7 +555,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		local opts = { buffer = ev.buf }
 		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
 		vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-		vim.keymap.set('n', 'gk', vim.lsp.buf.type_definition, opts)
 		vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 		vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 		vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
@@ -613,13 +613,15 @@ require'marks'.setup {
 }
 
 require'window-picker'.setup {
-	autoselect_one = true,
-	include_current = false,
-	other_win_hl_color = '#2d3149',
 	selection_chars = 'ABCDEFJHIJKLMNOPQRSTUVWXYZ',
-	bo = {
-		filetype = { 'NvimTree', "neo-tree", "qf" }
-	},
+	filter_rules = {
+		autoselect_one = true,
+		include_current_win = false,
+		other_win_hl_color = '#2d3149',
+		bo = {
+			filetype = { 'NvimTree', "neo-tree", "qf" }
+		}
+	}
 }
 
 require'neo-tree'.setup {
@@ -954,7 +956,9 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('frecency')
 
-local rainbow = require'ts-rainbow'
+require'rainbow-delimiters.setup'.setup {
+	
+}
 
 require'nvim-treesitter.configs'.setup {
 	ignore_install = { "latex" },
@@ -964,15 +968,6 @@ require'nvim-treesitter.configs'.setup {
 	},
 	incremental_selection = {
 		enable = false,
-	},
-	rainbow = {
-		enable = true,
-		query = {
-		  'rainbow-parens',
-		  html = 'rainbow-tags',
-		  latex = 'rainbow-blocks'
-		},
-		strategy = rainbow.strategy.global,
 	}
 }
 require'nvim-web-devicons'.setup {
