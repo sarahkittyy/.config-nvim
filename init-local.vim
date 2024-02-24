@@ -51,6 +51,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'neovim/nvim-lspconfig'
 	Plug 'onsails/lspkind.nvim'
 	Plug 'hrsh7th/cmp-nvim-lsp'
+	Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 	Plug 'hrsh7th/cmp-buffer'
 	Plug 'hrsh7th/cmp-cmdline'
 	Plug 'hrsh7th/cmp-path'
@@ -212,6 +213,7 @@ augroup all
 	au VimLeave * wshada!
 	au BufNewFile,BufRead /*.rasi setf css
 	au BufNewFile,BufRead *.ipynb setfiletype python
+	au BufWritePre *.rs lua vim.lsp.buf.format()
 	"autocmd BufWritePost $MYVIMRC call ReloadVimrc()
 	au BufEnter * :ClangFormatAutoDisable
 	au BufEnter *.cpp,*.hpp,*.c,*.h :ClangFormatAutoEnable
@@ -307,7 +309,6 @@ nnoremap <leader>b :AsyncTask build<CR>
 nnoremap <leader>s :AsyncStop<CR>
 nmap <leader>R :call RefreshAll()<CR>
 "nmap <leader>e 
-nmap <silent> <Esc> :cclose<CR>
 nmap <silent> <s-t> :if &ft ==? "neo-tree" \| wincmd l \| endif \| FloatermToggle<CR>
 nmap <C-s-t> :ToggleTerminal<CR>
 nmap <C-w>t :ToggleTabTerminal<CR>
@@ -499,6 +500,7 @@ cmp.setup({
 	},
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
+		{ name = 'nvim_lsp_signature_help' },
 		{ name = 'luasnip', option = { keyword_length = 2 } }
 	}, {
 		{ name = 'buffer', option = { keyword_length = 0 } },
