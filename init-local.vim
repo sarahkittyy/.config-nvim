@@ -89,6 +89,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'caenrique/nvim-toggle-terminal'
 	Plug 'equalsraf/neovim-gui-shim'
 	Plug 'nvim-telescope/telescope.nvim'
+	Plug 'nvim-neotest/nvim-nio'
 
 	"Plug 'kyazdani42/nvim-tree.lua'
 	Plug 'nvim-neo-tree/neo-tree.nvim'
