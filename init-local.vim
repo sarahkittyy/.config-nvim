@@ -60,10 +60,8 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'saadparwaiz1/cmp_luasnip'
 	Plug 'simrat39/rust-tools.nvim'
 
-	Plug 'github/copilot.vim', { 'branch': 'release' }
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
-	Plug 'rcarriga/nvim-dap-ui'
 
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 	Plug 'HiPhish/rainbow-delimiters.nvim'
@@ -140,6 +138,7 @@ set listchars=tab:\|\
 set nolist
 set updatetime=350
 set autoread
+set signcolumn=yes:1
 filetype plugin on
 filetype plugin indent on
 
@@ -278,16 +277,15 @@ tnoremap <C-BS> <C-w>
 imap <silent><script><expr> <C-J> copilot#Accept("")
 
 " nvim-dap bindings
-nmap <silent> <leader>du :lua require'dapui'.toggle()<CR>
-nmap <silent> <leader>dc :lua require'dap'.continue()<CR>
-nmap <silent> <leader>ds :lua require'dap'.step_over()<CR>
-nmap <silent> <leader>di :lua require'dap'.step_into()<CR>
-nmap <silent> <leader>do :lua require'dap'.step_out()<CR>
-nmap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>
-nmap <silent> <leader>dB :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-nmap <silent> <leader>dR :lua require'dap'.run_to_cursor()<CR>
-nmap <silent> <leader>dr :lua require'dap'.repl.open()<CR>
-nmap <silent> <leader>dl :lua require'dap'.run_last()<CR>
+"nmap <silent> <leader>dc :lua require'dap'.continue()<CR>
+"nmap <silent> <leader>ds :lua require'dap'.step_over()<CR>
+"nmap <silent> <leader>di :lua require'dap'.step_into()<CR>
+"nmap <silent> <leader>do :lua require'dap'.step_out()<CR>
+"nmap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>
+"nmap <silent> <leader>dB :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+"nmap <silent> <leader>dR :lua require'dap'.run_to_cursor()<CR>
+"nmap <silent> <leader>dr :lua require'dap'.repl.open()<CR>
+"nmap <silent> <leader>dl :lua require'dap'.run_last()<CR>
 
 nnoremap <silent><nowait> gs :Neotree source=git_status position=float toggle<CR>
 nnoremap gc :Vista<CR>
@@ -534,23 +532,11 @@ lspconfig.pyright.setup {
 lspconfig.clangd.setup {
 	capabilities = capabilities,
 }
-lspconfig.volar.setup{
-	filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'},
-	capabilities = capabilities,
-}
+
 lspconfig.vimls.setup{
 	capabilities = capabilities,
 }
-lspconfig.hls.setup{
-	capabilities = capabilities,
-	filetypes = { 'haskell', 'lhaskell', 'cabal' }
-}
 lspconfig.glslls.setup{}
-local cssls_capabilities = capabilities
-cssls_capabilities.textDocument.completion.completionItem.snippetSupport = true
-lspconfig.cssls.setup{
-  capabilities = cssls_capabilities,
-}
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -722,86 +708,86 @@ require("nvim-dap-virtual-text").setup {
     virt_text_win_col = nil                -- position the virtual text at a fixed window column (starting from the first text column) ,
 }
 
-require("dapui").setup({
-  icons = { expanded = "", collapsed = "", current_frame = "" },
-  mappings = {
-    -- Use a table to apply multiple mappings
-    expand = { "<CR>", "<2-LeftMouse>" },
-    open = "o",
-    remove = "d",
-    edit = "e",
-    repl = "r",
-    toggle = "t",
-  },
-  -- Use this to override mappings for specific elements
-  element_mappings = {
-    -- Example:
-    -- stacks = {
-    --   open = "<CR>",
-    --   expand = "o",
-    -- }
-  },
-  -- Expand lines larger than the window
-  -- Requires >= 0.7
-  expand_lines = vim.fn.has("nvim-0.7") == 1,
-  -- Layouts define sections of the screen to place windows.
-  -- The position can be "left", "right", "top" or "bottom".
-  -- The size specifies the height/width depending on position. It can be an Int
-  -- or a Float. Integer specifies height/width directly (i.e. 20 lines/columns) while
-  -- Float value specifies percentage (i.e. 0.3 - 30% of available lines/columns)
-  -- Elements are the elements shown in the layout (in order).
-  -- Layouts are opened in order so that earlier layouts take priority in window sizing.
-  layouts = {
-    {
-      elements = {
-      -- Elements can be strings or table with id and size keys.
-        { id = "scopes", size = 0.25 },
-        "breakpoints",
-        "stacks",
-        "watches",
-      },
-      size = 40, -- 40 columns
-      position = "left",
-    },
-    {
-      elements = {
-        "repl",
-        "console",
-      },
-      size = 0.25, -- 25% of total lines
-      position = "bottom",
-    },
-  },
-  controls = {
-    -- Requires Neovim nightly (or 0.8 when released)
-    enabled = true,
-    -- Display controls in this element
-    element = "repl",
-    icons = {
-      pause = "",
-      play = "",
-      step_into = "",
-      step_over = "",
-      step_out = "",
-      step_back = "",
-      run_last = "",
-      terminate = "",
-    },
-  },
-  floating = {
-    max_height = nil, -- These can be integers or a float between 0 and 1.
-    max_width = nil, -- Floats will be treated as percentage of your screen.
-    border = "single", -- Border style. Can be "single", "double" or "rounded"
-    mappings = {
-      close = { "q", "<Esc>" },
-    },
-  },
-  windows = { indent = 1 },
-  render = {
-    max_type_length = nil, -- Can be integer or nil.
-    max_value_lines = 100, -- Can be integer or nil.
-  }
-})
+-- require("dapui").setup({
+--   icons = { expanded = "", collapsed = "", current_frame = "" },
+--   mappings = {
+--     -- Use a table to apply multiple mappings
+--     expand = { "<CR>", "<2-LeftMouse>" },
+--     open = "o",
+--     remove = "d",
+--     edit = "e",
+--     repl = "r",
+--     toggle = "t",
+--   },
+--   -- Use this to override mappings for specific elements
+--   element_mappings = {
+--     -- Example:
+--     -- stacks = {
+--     --   open = "<CR>",
+--     --   expand = "o",
+--     -- }
+--   },
+--   -- Expand lines larger than the window
+--   -- Requires >= 0.7
+--   expand_lines = vim.fn.has("nvim-0.7") == 1,
+--   -- Layouts define sections of the screen to place windows.
+--   -- The position can be "left", "right", "top" or "bottom".
+--   -- The size specifies the height/width depending on position. It can be an Int
+--   -- or a Float. Integer specifies height/width directly (i.e. 20 lines/columns) while
+--   -- Float value specifies percentage (i.e. 0.3 - 30% of available lines/columns)
+--   -- Elements are the elements shown in the layout (in order).
+--   -- Layouts are opened in order so that earlier layouts take priority in window sizing.
+--   layouts = {
+--     {
+--       elements = {
+--       -- Elements can be strings or table with id and size keys.
+--         { id = "scopes", size = 0.25 },
+--         "breakpoints",
+--         "stacks",
+--         "watches",
+--       },
+--       size = 40, -- 40 columns
+--       position = "left",
+--     },
+--     {
+--       elements = {
+--         "repl",
+--         "console",
+--       },
+--       size = 0.25, -- 25% of total lines
+--       position = "bottom",
+--     },
+--   },
+--   controls = {
+--     -- Requires Neovim nightly (or 0.8 when released)
+--     enabled = true,
+--     -- Display controls in this element
+--     element = "repl",
+--     icons = {
+--       pause = "",
+--       play = "",
+--       step_into = "",
+--       step_over = "",
+--       step_out = "",
+--       step_back = "",
+--       run_last = "",
+--       terminate = "",
+--     },
+--   },
+--   floating = {
+--     max_height = nil, -- These can be integers or a float between 0 and 1.
+--     max_width = nil, -- Floats will be treated as percentage of your screen.
+--     border = "single", -- Border style. Can be "single", "double" or "rounded"
+--     mappings = {
+--       close = { "q", "<Esc>" },
+--     },
+--   },
+--   windows = { indent = 1 },
+--   render = {
+--     max_type_length = nil, -- Can be integer or nil.
+--     max_value_lines = 100, -- Can be integer or nil.
+--   }
+-- })
 
 require('nightfox').setup({
 	options = {
@@ -813,7 +799,6 @@ require('nightfox').setup({
 		}
 	}
 })
-
 require('catppuccin').setup({
 	flavour = "mocha",
 	integrations = {
@@ -906,7 +891,7 @@ require('lualine').setup {
  		lualine_y = {'filetype' },
  		lualine_z = {'location', 'encoding' }
  	},
- 	extensions = { 'nvim-tree', 'nvim-dap-ui', 'fzf', 'fugitive' },
+ 	extensions = { 'nvim-tree', 'fzf', 'fugitive' },
 	refresh = {
 		statusline = 1500
 	}
