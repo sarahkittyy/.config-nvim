@@ -58,7 +58,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'hrsh7th/nvim-cmp'
 	Plug 'L3MON4D3/LuaSnip', {'tag': 'v1.*', 'do': 'make install_jsregexp' }
 	Plug 'saadparwaiz1/cmp_luasnip'
-	Plug 'simrat39/rust-tools.nvim'
+	Plug 'mrcjkb/rustaceanvim'
 
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
@@ -79,7 +79,6 @@ call plug#begin('~/.config/nvim/plugins')
 
 	Plug 'liuchengxu/vista.vim'
 
-	Plug 'dccsillag/magma-nvim', { 'do': ':UpdateRemotePlugins' }
 	Plug 'nathanaelkane/vim-indent-guides'
 	Plug 'mattn/emmet-vim'
 	"Plug 'lewis6991/gitsigns.nvim'
@@ -130,6 +129,7 @@ set nofixeol
 set shiftwidth=4
 set softtabstop=4
 set noexpandtab
+set nosmartindent
 set completeopt=menuone,noinsert,noselect
 set hidden
 set re=2
@@ -318,12 +318,6 @@ map <leader>p "+p
 map <leader>y "+y
 map <leader>mp <Plug>MarkdownPreviewToggle
 nnoremap <silent> <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
-" magma
-nnoremap <silent> <leader>jo :MagmaEvaluateOperator<CR>
-nnoremap <silent> <leader>ji :MagmaInit<CR>
-xnoremap <silent>       <leader>jv  :<C-u>MagmaEvaluateVisual<CR>
-nnoremap <silent>       <leader>jc :MagmaReevaluateCell<CR>
-nnoremap <silent>       <leader>jd :MagmaDelete<CR>
 inoremap <silent> f<TAB> <TAB>
 
 " COMMANDS -----------------------------------
@@ -537,6 +531,7 @@ lspconfig.vimls.setup{
 	capabilities = capabilities,
 }
 lspconfig.glslls.setup{}
+lspconfig.slint_lsp.setup{}
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -563,7 +558,7 @@ vim.diagnostic.config {
 	virtual_text = false
 }
 
-require'rust-tools'.setup({
+vim.g.rustaceanvim = {
 	tools = {
 		inlay_hints = {
 			auto = false,
@@ -571,9 +566,23 @@ require'rust-tools'.setup({
 		}
 	},
 	server = {
-		standalone = false
+		default_settings = {
+			-- rust-analyzer language server configuration
+			['rust-analyzer'] = {
+				cargo = {
+					buildScripts = {
+						enable = true
+					},
+					features = "all"
+				},
+				procMacro = {
+					enable = true
+				}
+			},
+		},
 	},
-})
+
+}
 
 -- LUA CONFIG ------------------------------------------
  
@@ -614,7 +623,7 @@ require'window-picker'.setup {
 }
 
 require'neo-tree'.setup {
-	enable_diagnostics = false,
+	enable_diagnostics = true,
 	enable_git_status = false,
 	window = {
 		position="left",
@@ -949,6 +958,9 @@ require'rainbow-delimiters.setup'.setup {
 }
 
 require'nvim-treesitter.configs'.setup {
+	indent = {
+		enable = true
+	},
 	ignore_install = { "latex" },
 	highlight = {
 		enable = true,
