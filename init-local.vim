@@ -57,7 +57,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'hrsh7th/cmp-path'
 	Plug 'hrsh7th/nvim-cmp'
 	Plug 'L3MON4D3/LuaSnip', {'tag': 'v1.*', 'do': 'make install_jsregexp' }
-	Plug 'saadparwaiz1/cmp_luasnip'
+	Plug 'saadparwaiz1/cmp_luasnip', { 'do': 'make install_jsregexp' }
 	Plug 'mrcjkb/rustaceanvim'
 
 	"Plug 'dense-analysis/ale'
@@ -274,6 +274,7 @@ map ^ g^
 tnoremap <s-space> <space>
 tnoremap <s-BS> <BS>
 tnoremap <C-BS> <C-w>
+inoremap <C-BS> <C-w>
 imap <silent><script><expr> <C-J> copilot#Accept("")
 
 " nvim-dap bindings
@@ -520,9 +521,52 @@ cmp.setup.cmdline(':', {
 local lspconfig = require'lspconfig'
 local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 
-lspconfig.pyright.setup {
-	capabilities = capabilities,
-}
+local configs = require'lspconfig/configs'
+local util = require'lspconfig/util'
+
+local path = util.path
+
+local function get_python_path(workspace)
+	-- Use activated virtualenv.
+	if vim.env.VIRTUAL_ENV then
+		return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+	end
+
+	-- Find and use virtualenv in workspace directory.
+	for _, pattern in ipairs({'*', '.*'}) do
+		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+		if match ~= '' then
+			return path.join(path.dirname(match), 'bin', 'python')
+		end
+	end
+
+	-- Fallback to system Python.
+	return exepath('python3') or exepath('python') or 'python'
+end
+
+lspconfig.pyright.setup({
+	before_init = function(_, config)
+		config.settings.python.pythonPath = get_python_path(config.root_dir)
+	end,
+	capabilities = {
+		workspace = {
+			didChangeWatchedFiles = {
+				dynamicRegistration = true,
+			}
+		}
+	},
+	settings = {
+		python = {
+			analysis = {
+				typeCheckingMode = "basic",
+				diagnosticSeverityOverrides = {
+                    reportAttributeAccessIssue = "none"  -- disable reportAttributeAccessIssue
+                }
+			}
+		}
+	}
+})
+
 lspconfig.clangd.setup {
 	capabilities = capabilities,
 }
@@ -575,13 +619,15 @@ vim.g.rustaceanvim = {
 					},
 					features = "all"
 				},
+				check = {
+					allTargets = false
+				},
 				procMacro = {
 					enable = true
 				}
 			},
 		},
 	},
-
 }
 
 -- LUA CONFIG ------------------------------------------
@@ -1002,11 +1048,22 @@ function! g:Run_termite(opts)
     let command = 'termite -e "bash -c ' . text . '"'
     call system(command . ' &')
 endfunction
+function! g:Run_alacritty(opts)
+    let cmds = []
+    let cmds += ['cd ' . shellescape(getcwd()) ]
+    let cmds += [a:opts.cmd]
+    let cmds += ['read -n1 -rsp "press any key to continue ..."']
+    let text = shellescape(join(cmds, ";"))
+    let command = 'alacritty -e bash -c ' . text
+	echom command
+    call system(command . ' &')
+endfunction
 let g:asyncrun_runner.termite = function('g:Run_termite')
+let g:asyncrun_runner.alacritty = function('g:Run_alacritty')
 
 function! g:Open_browser(url)
 	":AsyncRun google-chrome-stable --new-window. a:url
-	:call asyncrun#run("", {}, "google-chrome-stable --new-window " . a:url)
+	:call asyncrun#run("", {}, "firefox " . a:url)
 endfunction
 
 function! CheckBackspace() abort
