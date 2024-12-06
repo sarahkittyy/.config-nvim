@@ -217,6 +217,7 @@ augroup all
 	"autocmd BufWritePost $MYVIMRC call ReloadVimrc()
 	au BufEnter * :ClangFormatAutoDisable
 	au BufEnter *.cpp,*.hpp,*.c,*.h :ClangFormatAutoEnable
+	au FileType python setlocal expandtab
 	autocmd Filetype tex setlocal indentexpr=
 	au Filetype *.jsx,*.tsx set ft=typescriptreact
 	"autocmd BufWinEnter * NERDTreeMirror
@@ -250,10 +251,10 @@ nnoremap z= <C-w>=
 nnoremap <C-n> :Neotree toggle<CR>
 nmap gl :Neotree focus<CR>
 nmap <C-e> :RunFile<CR>
-"nnoremap F <cmd>Telescope frecency workspace=CWD<CR>
+nnoremap <C-f> <cmd>Telescope frecency workspace=CWD<CR>
 nnoremap F <cmd>FzfGFiles<CR>
 nnoremap <C-s> <cmd>FzfRg<CR>
-nnoremap <C-f> <cmd>FzfFiles<CR>
+"nnoremap <C-f> <cmd>FzfFiles<CR>
 nnoremap <leader>nt :tabnew<CR>:FzfFiles<CR>
 nnoremap <leader>fg <cmd>FzfGFiles?<CR>
 nnoremap <leader>fc <cmd>FzfCommits<CR>
@@ -560,8 +561,8 @@ lspconfig.pyright.setup({
 			analysis = {
 				typeCheckingMode = "basic",
 				diagnosticSeverityOverrides = {
-                    reportAttributeAccessIssue = "none"  -- disable reportAttributeAccessIssue
-                }
+            reportAttributeAccessIssue = "none"  -- disable reportAttributeAccessIssue
+        }
 			}
 		}
 	}
@@ -678,7 +679,12 @@ require'neo-tree'.setup {
 			["z"] = "none",
 			["<CR>"] = "open_with_window_picker",
 			["i"] = "split_with_window_picker",
-			["s"] = "vsplit_with_window_picker"
+			["s"] = "vsplit_with_window_picker",
+			["O"] = function(state)
+				local node = state.tree:get_node()
+				local path = node:get_id()
+				vim.fn.jobstart({ "xdg-open", path }, { detach = true })
+			end,
 		},
 		use_libuv_file_watcher = true
 	},
@@ -1005,7 +1011,7 @@ require'rainbow-delimiters.setup'.setup {
 
 require'nvim-treesitter.configs'.setup {
 	indent = {
-		enable = true
+		enable = false
 	},
 	ignore_install = { "latex" },
 	highlight = {
