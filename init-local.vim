@@ -44,6 +44,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 	Plug 'luisiacc/gruvbox-baby', { 'branch': 'main' }
 	Plug 'arcticicestudio/nord-vim'
+	Plug 'github/copilot.vim'
 
 	Plug 'kyazdani42/nvim-web-devicons'
 	Plug 'ryanoasis/vim-devicons'
@@ -58,7 +59,10 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'hrsh7th/nvim-cmp'
 	Plug 'L3MON4D3/LuaSnip', {'tag': 'v1.*', 'do': 'make install_jsregexp' }
 	Plug 'saadparwaiz1/cmp_luasnip', { 'do': 'make install_jsregexp' }
+	
 	Plug 'mrcjkb/rustaceanvim'
+
+	Plug 'nvim-lua/plenary.nvim'
 
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
@@ -75,7 +79,6 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 	Plug 'junegunn/fzf.vim'
 	Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-	Plug 'nvim-telescope/telescope-frecency.nvim'
 
 	Plug 'liuchengxu/vista.vim'
 
@@ -111,7 +114,6 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'voldikss/vim-floaterm'
 	Plug 'xolox/vim-misc'
 
-	Plug 'nvim-lua/plenary.nvim'
 	Plug 'MunifTanjim/nui.nvim'
 	Plug 's1n7ax/nvim-window-picker'
 
@@ -251,10 +253,9 @@ nnoremap z= <C-w>=
 nnoremap <C-n> :Neotree toggle<CR>
 nmap gl :Neotree focus<CR>
 nmap <C-e> :RunFile<CR>
-nnoremap <C-f> <cmd>Telescope frecency workspace=CWD<CR>
 nnoremap F <cmd>FzfGFiles<CR>
 nnoremap <C-s> <cmd>FzfRg<CR>
-"nnoremap <C-f> <cmd>FzfFiles<CR>
+nnoremap <C-f> <cmd>FzfFiles<CR>
 nnoremap <leader>nt :tabnew<CR>:FzfFiles<CR>
 nnoremap <leader>fg <cmd>FzfGFiles?<CR>
 nnoremap <leader>fc <cmd>FzfCommits<CR>
@@ -683,7 +684,7 @@ require'neo-tree'.setup {
 			["O"] = function(state)
 				local node = state.tree:get_node()
 				local path = node:get_id()
-				vim.fn.jobstart({ "xdg-open", path }, { detach = true })
+				vim.fn.jobstart({ "xdg-open", path }, { detach = tree })
 			end,
 		},
 		use_libuv_file_watcher = true
@@ -988,12 +989,6 @@ require('telescope').setup {
 	}
   },
   extensions = {
-		frecency = {
-			ignore_patterns = { "*.git/*", "*/node_modules/*", "*/build/*", "*/dist/*" },
-			disable_devicons = false,
-			show_unindexed = false,
-			default_workspace = 'CWD'
-		},
 		fzf = {
 			fuzzy = true,
 			override_generic_sorter = true,
@@ -1003,7 +998,6 @@ require('telescope').setup {
   }
 }
 require('telescope').load_extension('fzf')
-require('telescope').load_extension('frecency')
 
 require'rainbow-delimiters.setup'.setup {
 	
