@@ -1,0 +1,47 @@
+-- vim: foldlevelstart=0
+require('lazystrap')
+
+-- {{{ Plugins
+require('lazy').setup({
+	{"nvim-treesitter/nvim-treesitter", branch = 'master', lazy = false, build = ":TSUpdate"},
+	{"rebelot/kanagawa.nvim", branch = "master", lazy = false, priority = 1000,
+		config = function()
+			vim.cmd([[colorscheme kanagawa]])
+		end
+	},
+	{ "nvim-tree/nvim-web-devicons", lazy = true },
+})
+-- }}}
+
+-- {{{ Vim Options
+vim.opt.tabstop = 4
+vim.opt.expandtab = false
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.modeline = true
+vim.opt.foldmethod = "marker"
+vim.opt.foldlevelstart = 0
+-- }}}
+
+function noremap(mode, shortcut, command)
+  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true })
+end
+
+function map(mode, shortcut, command)
+  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = false })
+end
+
+function nmap(shortcut, command)
+  map('n', shortcut, command)
+end
+
+function imap(shortcut, command)
+  map('i', shortcut, command)
+end
+
+function vmap(shortcut, command)
+  map('v', shortcut, command)
+end
+
+nmap('<leader>p', '"+p')
+nmap('<leader>y', '"+y')
