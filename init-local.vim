@@ -520,33 +520,32 @@ cmp.setup.cmdline(':', {
 	}),
 })
 
-local lspconfig = require'lspconfig'
+-- Using new nvim 0.11 vim.lsp.config API instead of deprecated lspconfig
 local capabilities = require'cmp_nvim_lsp'.default_capabilities()
-
-local configs = require'lspconfig/configs'
-local util = require'lspconfig/util'
-
-local path = util.path
 
 local function get_python_path(workspace)
 	-- Use activated virtualenv.
 	if vim.env.VIRTUAL_ENV then
-		return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+		return vim.fs.joinpath(vim.env.VIRTUAL_ENV, 'bin', 'python')
 	end
 
 	-- Find and use virtualenv in workspace directory.
 	for _, pattern in ipairs({'*', '.*'}) do
-		local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+		local match = vim.fn.glob(vim.fs.joinpath(workspace, pattern, 'pyvenv.cfg'))
 		if match ~= '' then
-			return path.join(path.dirname(match), 'bin', 'python')
+			return vim.fs.joinpath(vim.fs.dirname(match), 'bin', 'python')
 		end
 	end
 
 	-- Fallback to system Python.
-	return exepath('python3') or exepath('python') or 'python'
+	return vim.fn.exepath('python3') or vim.fn.exepath('python') or 'python'
 end
 
-lspconfig.pyright.setup({
+-- Configure pyright LSP server
+vim.lsp.config('pyright', {
+	cmd = { 'pyright-langserver', '--stdio' },
+	filetypes = { 'python' },
+	root_markers = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
 	before_init = function(_, config)
 		config.settings.python.pythonPath = get_python_path(config.root_dir)
 	end,
@@ -562,22 +561,47 @@ lspconfig.pyright.setup({
 			analysis = {
 				typeCheckingMode = "basic",
 				diagnosticSeverityOverrides = {
-            reportAttributeAccessIssue = "none"  -- disable reportAttributeAccessIssue
-        }
+					reportAttributeAccessIssue = "none"  -- disable reportAttributeAccessIssue
+				}
 			}
 		}
 	}
 })
+vim.lsp.enable('pyright')
 
-lspconfig.clangd.setup {
+-- Configure clangd LSP server
+vim.lsp.config('clangd', {
+	cmd = { 'clangd' },
+	filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+	root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git' },
 	capabilities = capabilities,
-}
+})
+vim.lsp.enable('clangd')
 
-lspconfig.vimls.setup{
+-- Configure vimls (Vim script) LSP server
+vim.lsp.config('vimls', {
+	cmd = { 'vim-language-server', '--stdio' },
+	filetypes = { 'vim' },
+	root_markers = { '.git' },
 	capabilities = capabilities,
-}
-lspconfig.glslls.setup{}
-lspconfig.slint_lsp.setup{}
+})
+vim.lsp.enable('vimls')
+
+-- Configure glslls (GLSL shader) LSP server
+vim.lsp.config('glslls', {
+	cmd = { 'glslls', '--stdin' },
+	filetypes = { 'glsl', 'vert', 'frag', 'geom', 'comp', 'tesc', 'tese' },
+	root_markers = { '.git' },
+})
+vim.lsp.enable('glslls')
+
+-- Configure slint LSP server
+vim.lsp.config('slint_lsp', {
+	cmd = { 'slint-lsp' },
+	filetypes = { 'slint' },
+	root_markers = { '.git' },
+})
+vim.lsp.enable('slint_lsp')
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -619,7 +643,8 @@ vim.g.rustaceanvim = {
 					buildScripts = {
 						enable = true
 					},
-					features = "all"
+					features = "all",
+					autoreload = true
 				},
 				check = {
 					allTargets = false
