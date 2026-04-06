@@ -63,6 +63,7 @@ call plug#begin('~/.config/nvim/plugins')
 	Plug 'mrcjkb/rustaceanvim'
 
 	Plug 'nvim-lua/plenary.nvim'
+	Plug 'pmizio/typescript-tools.nvim'
 
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
@@ -569,6 +570,20 @@ vim.lsp.config('pyright', {
 })
 vim.lsp.enable('pyright')
 
+-- Enable LSP for css/html
+vim.lsp.config('cssls', {
+  cmd = {'css-languageserver', '--stdio'}, -- The executable might be named differently, use `:LspInfo` or `--stdio` to confirm
+  filetypes = {'css', 'scss', 'less'},
+  -- Other configurations can be added here
+})
+vim.lsp.enable('cssls') -- Enable the LSP server
+vim.lsp.config('httpls', {
+  cmd = {'http-languageserver', '--stdio'}, -- The executable might be named differently, use `:LspInfo` or `--stdio` to confirm
+  filetypes = {'html'},
+  -- Other configurations can be added here
+})
+vim.lsp.enable('httpls') -- Enable the LSP server
+
 -- Configure clangd LSP server
 vim.lsp.config('clangd', {
 	cmd = { 'clangd' },
@@ -636,6 +651,7 @@ vim.g.rustaceanvim = {
 		}
 	},
 	server = {
+		cmd = { "/Users/sarahkitty/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer", "--log-file", vim.fn.tempname() .. '-rust-analyzer.log' },
 		default_settings = {
 			-- rust-analyzer language server configuration
 			['rust-analyzer'] = {
@@ -658,6 +674,10 @@ vim.g.rustaceanvim = {
 }
 
 -- LUA CONFIG ------------------------------------------
+
+require'typescript-tools'.setup {
+
+}
  
 require'marks'.setup {
   -- whether to map keybinds or not. default true
@@ -703,7 +723,7 @@ require'neo-tree'.setup {
 		width=30,
 		mappings = {
 			["z"] = "none",
-			["<CR>"] = "open_with_window_picker",
+			["<cr>"] = "open_with_window_picker",
 			["i"] = "split_with_window_picker",
 			["s"] = "vsplit_with_window_picker",
 			["O"] = function(state)
