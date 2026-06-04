@@ -1,4 +1,3 @@
-" THEME CONFIG / PLUGIN PRELOAD CONFIG ------------------------------------------------------------------
 let g:gruvbox_material_palette = 'material'
 let g:gruvbox_material_background = 'medium'
 let g:gruvbox_material_enable_bold = 1
@@ -62,13 +61,14 @@ call plug#begin('~/.config/nvim/plugins')
 	
 	Plug 'mrcjkb/rustaceanvim'
 
+	Plug 'ibhagwan/fzf-lua'
 	Plug 'nvim-lua/plenary.nvim'
 	Plug 'pmizio/typescript-tools.nvim'
 
 	"Plug 'dense-analysis/ale'
 	Plug 'mfussenegger/nvim-dap'
 
-	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate', 'branch': 'master'}
 	Plug 'HiPhish/rainbow-delimiters.nvim'
 	Plug 'theHamsta/nvim-dap-virtual-text'
 	Plug 'tikhomirov/vim-glsl'
@@ -77,19 +77,16 @@ call plug#begin('~/.config/nvim/plugins')
 
 	Plug 'nvim-lualine/lualine.nvim'
 
-	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-	Plug 'junegunn/fzf.vim'
-	Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-
 	Plug 'liuchengxu/vista.vim'
 
-	Plug 'nathanaelkane/vim-indent-guides'
+	"Plug 'nathanaelkane/vim-indent-guides'
+	Plug 'lukas-reineke/indent-blankline.nvim'
+	"Plug 'shellRaining/hlchunk.nvim'
 	Plug 'mattn/emmet-vim'
 	"Plug 'lewis6991/gitsigns.nvim'
 	Plug 'chentoast/marks.nvim'
 	Plug 'caenrique/nvim-toggle-terminal'
 	Plug 'equalsraf/neovim-gui-shim'
-	Plug 'nvim-telescope/telescope.nvim'
 	Plug 'nvim-neotest/nvim-nio'
 
 	"Plug 'kyazdani42/nvim-tree.lua'
@@ -117,6 +114,8 @@ call plug#begin('~/.config/nvim/plugins')
 
 	Plug 'MunifTanjim/nui.nvim'
 	Plug 's1n7ax/nvim-window-picker'
+
+	Plug 'kawre/leetcode.nvim', { 'do': ':TSUpdate html' }
 
 	"Plug 'preservim/nerdtree'
 	"Plug 'Xuyuanp/nerdtree-git-plugin', { 'frozen': 1 }
@@ -254,9 +253,8 @@ nnoremap z= <C-w>=
 nnoremap <C-n> :Neotree toggle<CR>
 nmap gl :Neotree focus<CR>
 nmap <C-e> :RunFile<CR>
-nnoremap F <cmd>FzfGFiles<CR>
-nnoremap <C-s> <cmd>FzfRg<CR>
-nnoremap <C-f> <cmd>FzfFiles<CR>
+nnoremap F <cmd>FzfLua git_files<CR>
+nnoremap <C-f> <cmd>FzfLua files<CR>
 nnoremap <leader>nt :tabnew<CR>:FzfFiles<CR>
 nnoremap <leader>fg <cmd>FzfGFiles?<CR>
 nnoremap <leader>fc <cmd>FzfCommits<CR>
@@ -363,17 +361,18 @@ let g:neo_tree_remove_legacy_commands = 1
 
 let g:asyncrun_open = 6
 let g:asynctasks_term_pos = 'bottom'
+let g:asynctasks_term_rows = 15
 
 let g:vista_default_executive = 'nvim_lsp'
 
 let g:indentLine_char = '|'
 let g:indentLine_defaultGroup = 'SpecialKey'
 
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_start_level = 1
-let g:indent_guides_guide_size = 0
-let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'NvimTree', 'neo-tree']
-let g:indent_guides_color_change_percent = 2
+"let g:indent_guides_enable_on_vim_startup = 1
+"let g:indent_guides_start_level = 1
+"let g:indent_guides_guide_size = 0
+"let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'NvimTree', 'neo-tree', 'leetcode.nvim']
+"let g:indent_guides_color_change_percent = 2
 
 let g:user_emmet_leader_key='<C-y>'
 let g:user_emmet_mode='a'
@@ -472,23 +471,34 @@ local function collapseNode (node)
   node.open = false
 end
 
+-- ibl #3f3f52
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+	vim.api.nvim_set_hl(0, "IblIndent", { fg = "#38384a" })
+end)
+require'ibl'.setup {
+	scope = { enabled = false },
+	exclude = {
+		filetypes = { 'help', 'nerdtree', 'NvimTree', 'neo-tree', 'leetcode.nvim' }
+	},
+	indent = { highlight = { "IblIndent" } }
+}
+
 -- LSP CONFIG
 
 local lspkind = require'lspkind'
 local cmp = require'cmp'
 cmp.setup({
 	formatting = {
-		format = lspkind.cmp_format({ preset = 'codicons', mode = 'symbol_text' })
+		format = lspkind.cmp_format({ preset = 'codicons', mode = 'symbol_text', maxwidth = 50, ellipsis_char = "…" })
 	},
 	snippet = {
 		expand = function(args)
 			require('luasnip').lsp_expand(args.body)
 		end,
 	},
-	window = {
-      completion = cmp.config.window.bordered(),
-      documentation = cmp.config.window.bordered(),
-    },
 	mapping = {
 		['<CR>'] = cmp.mapping.confirm({ select = false }),
 		['<Up>'] = cmp.mapping.select_prev_item(),
@@ -503,6 +513,24 @@ cmp.setup({
 		{ name = 'buffer', option = { keyword_length = 0 } },
 		{ name = 'path' },
 	}),
+	performance = {
+		max_view_entries = 20
+	},
+	window = {
+		completion = {
+			border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
+			winhighlight = "Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
+			scrollbar = true,
+			col_offset = 0,
+			side_padding = 1,
+		},
+		documentation = {
+			border = { '┏', '━', '┓', '┃', '┛', '━', '┗', '┃' },
+			max_width = 60,
+			max_height = 20,
+			winhighlight = "Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
+		},
+	},
 })
 
 cmp.setup.cmdline('/', {
@@ -1004,49 +1032,60 @@ require('lualine').setup {
 	}
 }
 
-require('telescope').setup {
-  defaults = {
-    mappings = {
-      i = {
-        ["<Esc>"] = "close",
-        ["<C-f>"] = "close",
-        ["<C-s>"] = "close"
-      }
-    },
-	layout_strategy = "flex",
-	layout_config = {
-		flex = {
-			flip_columns = 140
-		},
-		vertical = {
-			width = 0.9
-		},
-		horizontal = {
-			width = 0.9
-		}
-	}
-  },
-  pickers = {
-	find_files = {
-	  find_command = { "rg", "--files", "--hidden", "-g", "!.git", "-g", "!build", "-g", "!dist", "-g", "!node_modules" },
-	  hidden = true,
-	  no_ignore = true
-	}
-  },
-  extensions = {
-		fzf = {
-			fuzzy = true,
-			override_generic_sorter = true,
-			override_file_sorter = true,
-			case_mode = "smart_case",
-		}
-  }
-}
-require('telescope').load_extension('fzf')
-
 require'rainbow-delimiters.setup'.setup {
 	
 }
+
+require'leetcode'.setup {
+	lang = "rust",
+	injector = {
+		["rust"] = {
+			before = { "#![allow(dead_code)]", "fn main() {}", "struct Solution;" },
+		},
+	},
+	hooks = {
+		["question_enter"] = {
+			function()
+				if vim.fn.expand("%:e") ~= "rs" then return end
+				local dir = vim.fn.stdpath("data") .. "/leetcode"
+				local out = dir .. "/rust-project.json"
+				local crates, sep = "", ""
+				for _, f in ipairs(vim.fn.globpath(dir, "*.rs", false, true)) do
+					crates = crates .. sep .. '{"root_module":"' .. f .. '","edition":"2021","deps":[]}'
+					sep = ","
+				end
+				if crates == "" then return end
+				local sysroot = vim.fn.system("rustc --print sysroot"):gsub("\n", "")
+				.. "/lib/rustlib/src/rust/library"
+				local file = io.open(out, "w")
+				if file then
+					file:write('{"sysroot_src":"' .. sysroot .. '","crates":[' .. crates .. "]}")
+					file:close()
+					pcall(function() vim.cmd.RustAnalyzer("stop") end)
+					vim.defer_fn(function() pcall(function() vim.cmd.RustAnalyzer("start") end) end, 1000)
+				end
+			end,
+		},
+	},
+}
+
+-- leetcode specific binds
+vim.api.nvim_create_autocmd("BufEnter", {
+	group = vim.api.nvim_create_augroup("leetcode_keys", { clear = true }),
+	pattern = vim.fn.stdpath("data") .. "/leetcode/*",
+	callback = function(args)
+		local map = function(lhs, sub, desc)
+			vim.keymap.set("n", lhs, "<cmd>Leet " .. sub .. "<cr>",
+				{ buffer = args.buf, silent = true, desc = "LeetCode: " .. desc })
+		end
+		map("<leader>t", "test", "run test cases")
+		map("<leader>r", "submit", "submit")
+		map("<leader>c", "console", "open console")
+		map("<leader>i", "info", "question info")
+		map("<leader>d", "desc", "toggle description")
+		map("<leader>w", "open", "open website")
+	end,
+})
 
 require'nvim-treesitter.configs'.setup {
 	indent = {
